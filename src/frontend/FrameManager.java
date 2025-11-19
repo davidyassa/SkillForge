@@ -34,6 +34,10 @@ public class FrameManager extends JFrame {
         this.setVisible(true);
     }
 
+    public JsonDatabaseManager getDb() {
+        return db;
+    }
+
     public UserService getUserService() {
         return userService;
     }

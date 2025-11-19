@@ -199,15 +199,31 @@ public class JsonDatabaseManager {
 //LessonID = CourseID + generatedID, e.g. C20 -> L2001
 
     public static String generateLessonId(Course course) {
-        int id = 0;
+        int max = 0;
+
         for (Lesson l : course.getLessons()) {
-            String numStr = l.getID().substring(course.getID().length()); //ignore "L +courseID"
-            int num = Integer.parseInt(numStr);
-            if (num > id) {
-                id = num;
+            String id = l.getID();
+
+            // Extract trailing digits
+            int i = id.length() - 1;
+            while (i >= 0 && Character.isDigit(id.charAt(i))) {
+                i--;
+            }
+
+            String numStr = id.substring(i + 1);  // trailing number only
+
+            if (!numStr.isEmpty()) {
+                try {
+                    int num = Integer.parseInt(numStr);
+                    if (num > max) {
+                        max = num;
+                    }
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
-        return "L" + String.valueOf(++id);
+
+        return "L" + course.getID() + String.format("%02d", max + 1);
     }
 
     private static RuntimeTypeAdapterFactory<User> getUserAdapter() { //Gson needs this to deal with extended classes 

@@ -76,5 +76,4 @@ public class StudentCourseProgress {
     public String getCourseID() {
         return courseID;
     }
-
 }
