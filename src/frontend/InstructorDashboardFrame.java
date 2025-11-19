@@ -21,6 +21,7 @@ public class InstructorDashboardFrame extends javax.swing.JFrame {
 
     public InstructorDashboardFrame(Instructor instructor) {
         this.currentInstructor = instructor;
+        this.courseService = new CourseService(dbManager);
         initComponents();
         customInit();
     }
@@ -44,12 +45,17 @@ public class InstructorDashboardFrame extends javax.swing.JFrame {
     }// </editor-fold>                        
 
     private void customInit() {
+if (currentInstructor != null) {
+            setTitle("Instructor Dashboard - " + currentInstructor.getUsername());
+        } else {
+             setTitle("Instructor Dashboard");
+        }
+
         loadCoursesData();
     }
 
     private void loadCoursesData() {
-        logger.info("Loading courses for instructor: " + currentInstructor.getUsername());
-
+logger.info("Loading courses for instructor: " + (currentInstructor != null ? currentInstructor.getUsername() : "Unknown"));
     }
 
 }
