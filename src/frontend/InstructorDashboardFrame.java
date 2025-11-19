@@ -11,6 +11,7 @@ package frontend;
 import backend.Instructor;
 import controller.CourseService;
 import java.util.logging.Logger;
+import backend.JsonDatabaseManager;
 
 public class InstructorDashboardFrame extends javax.swing.JFrame {
 
@@ -21,6 +22,7 @@ public class InstructorDashboardFrame extends javax.swing.JFrame {
 
     public InstructorDashboardFrame(Instructor instructor) {
         this.currentInstructor = instructor;
+        JsonDatabaseManager dbManager = new JsonDatabaseManager("users.json", "courses.json");
         this.courseService = new CourseService(dbManager);
         initComponents();
         customInit();
