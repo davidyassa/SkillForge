@@ -113,7 +113,7 @@ public class JsonDatabaseManager {
     }
 
     public boolean isValidEmail(String input) { //validate and detect emails
-        return input.matches("^[^@]{2,}@[A-Za-z0-9._-]{2,}\\.[A-Za-z0-9._-]{2,}$");
+        return input.matches("^[^@]{2,}@[A-Za-z0-9.-]{2,}\\.[A-Za-z0-9.-]{2,}$");
         //format: ab@cd.ef
     }
 

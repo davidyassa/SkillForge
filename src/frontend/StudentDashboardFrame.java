@@ -13,7 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class StudentDashboardFrame extends JFrame {
+public class StudentDashboardFrame extends JPanel {
 
     private Student currentStudent;
     private CourseService courseService;
@@ -25,47 +25,35 @@ public class StudentDashboardFrame extends JFrame {
     private JList<Course> availableCoursesList;
     private JList<Course> enrolledCoursesList;
     private JList<Lesson> lessonsList;
+
     private JButton enrollButton;
     private JButton completeLessonButton;
+
     private JLabel studentNameLabel;
     private JLabel progressLabel;
-    private JPanel topPanel;
-    private JSplitPane mainSplit;
-    private JSplitPane rightSplit;
 
-    public StudentDashboardFrame(Student student, CourseService courseService) {
-        this.currentStudent = student;
-        this.courseService = courseService;
+    public StudentDashboardFrame(FrameManager frame) {
+        this.currentStudent = frame.getCurrentStudent();
+        this.courseService = frame.getCourseService();
 
         availableCoursesModel = new DefaultListModel<>();
         enrolledCoursesModel = new DefaultListModel<>();
         lessonsModel = new DefaultListModel<>();
 
-        buildUI();
-
-        loadAvailableCourses();
-        loadEnrolledCourses();
-
-        studentNameLabel.setText("Welcome, " + currentStudent.getUsername());
-        progressLabel.setText("Select an enrolled course to see progress");
-
-        setTitle("Student Dashboard: " + student.getUsername());
-        setSize(1000, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-    }
-
-    private void buildUI() {
         setLayout(new BorderLayout(10, 10));
 
-        topPanel = new JPanel(new BorderLayout());
+        JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        studentNameLabel = new JLabel();
+
+        studentNameLabel = new JLabel("Welcome, " + currentStudent.getUsername());
         studentNameLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        progressLabel = new JLabel();
+
+        progressLabel = new JLabel("Select a course to view progress");
         progressLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
         topPanel.add(studentNameLabel, BorderLayout.WEST);
         topPanel.add(progressLabel, BorderLayout.EAST);
+
         add(topPanel, BorderLayout.NORTH);
 
         availableCoursesList = new JList<>(availableCoursesModel);
@@ -75,108 +63,71 @@ public class StudentDashboardFrame extends JFrame {
         enrollButton = new JButton("Enroll in Selected Course");
         completeLessonButton = new JButton("Mark Lesson as Completed");
 
-        JPanel availablePanel = createTitledPanel("Available Courses", availableCoursesList, enrollButton);
-        JPanel enrolledPanel = createTitledPanel("My Enrolled Courses", enrolledCoursesList, null);
-        JPanel lessonsPanel = createTitledPanel("Course Lessons", lessonsList, completeLessonButton);
+        JPanel availablePanel = createPanel("Available Courses", availableCoursesList, enrollButton);
+        JPanel enrolledPanel = createPanel("My Courses", enrolledCoursesList, null);
+        JPanel lessonsPanel = createPanel("Lessons", lessonsList, completeLessonButton);
 
-        mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, availablePanel, enrolledPanel);
+        JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, availablePanel, enrolledPanel);
         mainSplit.setResizeWeight(0.5);
 
-        rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsPanel);
+        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsPanel);
         rightSplit.setResizeWeight(0.66);
 
         add(rightSplit, BorderLayout.CENTER);
 
+        loadAvailableCourses();
+        loadEnrolledCourses();
+
         enrollButton.addActionListener(e -> enrollSelectedCourse());
-        completeLessonButton.addActionListener(e -> markSelectedLessonAsComplete());
+        completeLessonButton.addActionListener(e -> completeLesson());
         enrolledCoursesList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                loadLessonsForSelectedCourse();
-            }
+            if(!e.getValueIsAdjusting()) loadLessons();
         });
     }
 
-    private JPanel createTitledPanel(String title, JComponent list, JButton button) {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
+    private JPanel createPanel(String title, JComponent list, JButton button) {
+        JPanel panel = new JPanel(new BorderLayout(5,5));
         panel.setBorder(BorderFactory.createTitledBorder(title));
         panel.add(new JScrollPane(list), BorderLayout.CENTER);
-        if (button != null) {
-            panel.add(button, BorderLayout.SOUTH);
-        }
+        if(button != null) panel.add(button, BorderLayout.SOUTH);
         return panel;
     }
 
     private void loadAvailableCourses() {
         availableCoursesModel.clear();
-        List<Course> allCourses = courseService.getAllCourses();
-        List<String> enrolledIds = currentStudent.getEnrolledCourses();
-
-        for (Course course : allCourses) {
-            if (!enrolledIds.contains(course.getID())) {
-                availableCoursesModel.addElement(course);
-            }
-        }
+        List<Course> all = courseService.getAllCourses();
+        List<String> enrolled = currentStudent.getEnrolledCourses();
+        for(Course c : all) if(!enrolled.contains(c.getID())) availableCoursesModel.addElement(c);
     }
 
     private void loadEnrolledCourses() {
         enrolledCoursesModel.clear();
-        List<Course> enrolledCourses = courseService.getEnrolledCourses(currentStudent.getID());
-        for (Course course : enrolledCourses) {
-            enrolledCoursesModel.addElement(course);
+        List<Course> courses = courseService.getEnrolledCourses(currentStudent.getID());
+        for(Course c : courses) enrolledCoursesModel.addElement(c);
+    }
+
+    private void loadLessons() {
+        lessonsModel.clear();
+        Course c = enrolledCoursesList.getSelectedValue();
+        if(c != null) {
+            for(Lesson l : c.getLessons()) lessonsModel.addElement(l);
+            double p = courseService.getCourseProgress(currentStudent.getID(), c.getID());
+            progressLabel.setText("Progress: " + String.format("%.1f%%", p));
         }
     }
 
     private void enrollSelectedCourse() {
-        Course selectedCourse = availableCoursesList.getSelectedValue();
-        if (selectedCourse != null) {
-            boolean success = courseService.enrollStudent(currentStudent.getID(), selectedCourse.getID());
-            if (success) {
-                loadAvailableCourses();
-                loadEnrolledCourses();
-                JOptionPane.showMessageDialog(this, "Enrollment successful!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Enrollment failed.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select a course to enroll.", "Warning", JOptionPane.WARNING_MESSAGE);
-        }
+        Course c = availableCoursesList.getSelectedValue();
+        if(c == null) { JOptionPane.showMessageDialog(this, "Select a course first."); return; }
+        boolean ok = courseService.enrollStudent(currentStudent.getID(), c.getID());
+        if(ok) { loadAvailableCourses(); loadEnrolledCourses(); JOptionPane.showMessageDialog(this,"Enrolled!"); }
     }
 
-    private void loadLessonsForSelectedCourse() {
-        Course selectedCourse = enrolledCoursesList.getSelectedValue();
-        if (selectedCourse != null) {
-            lessonsModel.clear();
-            List<Lesson> lessons = selectedCourse.getLessons();
-            if (lessons != null) {
-                for (Lesson lesson : lessons) {
-                    lessonsModel.addElement(lesson);
-                }
-            }
-            double progress = courseService.getCourseProgress(currentStudent.getID(), selectedCourse.getID());
-            progressLabel.setText(String.format("Progress in [%s]: %.1f%%", selectedCourse.getTitle(), progress));
-        } else {
-            lessonsModel.clear();
-            progressLabel.setText("Select an enrolled course to see progress");
-        }
-    }
-
-    private void markSelectedLessonAsComplete() {
-        Course selectedCourse = enrolledCoursesList.getSelectedValue();
-        Lesson selectedLesson = lessonsList.getSelectedValue();
-        if (selectedCourse != null && selectedLesson != null) {
-            boolean success = courseService.completeLesson(
-                    currentStudent.getID(),
-                    selectedCourse.getID(),
-                    selectedLesson.getID()
-            );
-            if (success) {
-                loadLessonsForSelectedCourse();
-                JOptionPane.showMessageDialog(this, "Lesson marked as complete!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Action failed.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select a course and a lesson.", "Warning", JOptionPane.WARNING_MESSAGE);
-        }
+    private void completeLesson() {
+        Course c = enrolledCoursesList.getSelectedValue();
+        Lesson l = lessonsList.getSelectedValue();
+        if(c == null || l == null) { JOptionPane.showMessageDialog(this,"Select a lesson."); return; }
+        boolean ok = courseService.completeLesson(currentStudent.getID(), c.getID(), l.getID());
+        if(ok) { loadLessons(); JOptionPane.showMessageDialog(this,"Lesson completed!"); }
     }
 }
