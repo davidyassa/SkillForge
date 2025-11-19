@@ -30,7 +30,7 @@ public class UserService {
         if (u == null) {
             return null;
         }
-        return u.isPasswordCorrect(password)? u : null;
+        return u.isPasswordCorrect(password) ? u : null;
     }
 
     public Student registerStudent(String username, String email, String password) throws IllegalArgumentException {
@@ -50,6 +50,25 @@ public class UserService {
         Student s = new Student(id, username, email, hash);
         db.addUser(s);
         return s;
+    }
+
+    public Instructor registerInstructor(String username, String email, String password) throws IllegalArgumentException {
+        if (userExistsByUsername(username)) {
+            throw new IllegalArgumentException("Username already exists!");
+        }
+        if (userExistsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists!");
+        }
+        if (!db.isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email!");
+        }
+
+        String id = JsonDatabaseManager.generateUserId();
+        String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
+
+        Instructor ins = new Instructor(id, username, email, hash);
+        db.addUser(ins);
+        return ins;
     }
 
     public boolean deleteUser(String userId) {

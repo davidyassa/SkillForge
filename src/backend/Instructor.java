@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 public class Instructor extends User {
 
-    private ArrayList<String> createdCourses;
     private static JsonDatabaseManager db;
+    private ArrayList<String> createdCourses = new ArrayList<>();
 
     public static void setDB(JsonDatabaseManager dbm) {
         db = dbm;
@@ -17,13 +17,15 @@ public class Instructor extends User {
 
     public Instructor(String userId, String username, String email, String passwordHash) {
         super(userId, "INSTRUCTOR", username, email, passwordHash);
-        createdCourses = new ArrayList<>();
+        this.createdCourses = new ArrayList<>();
     }
 
-    public Instructor(String userId, String username, String email, String passwordHash, ArrayList<String> createdCourses) {
+    public Instructor(String userId, String username, String email, String passwordHash, ArrayList<String> createdCoursess) {
         super(userId, "INSTRUCTOR", username, email, passwordHash);
-        if (createdCourses != null) {
-            this.createdCourses = new ArrayList<>(createdCourses);
+        if (createdCoursess != null) {
+            createdCourses = new ArrayList<>(createdCoursess);
+        } else {
+            createdCourses = new ArrayList<>();
         }
     }
 
@@ -37,14 +39,6 @@ public class Instructor extends User {
         }
     }
 
-    public void removeCourse(String courseId) {
-        createdCourses.remove(courseId);
-    }
-
-    public void addCreatedCourse(String courseId) {
-        createdCourses.add(courseId);
-    }
-
     public Course createCourse(String courseTitle, String courseDesc) {
         String id = JsonDatabaseManager.generateCourseId();
         Course c = new Course(
@@ -52,7 +46,7 @@ public class Instructor extends User {
                 courseTitle,
                 courseDesc,
                 getID());
-        addCreatedCourse(id);
+        addCourse(id);
         db.addCourse(c);
         db.saveUsers();
 
@@ -69,10 +63,10 @@ public class Instructor extends User {
         db.saveCourses();
     }
 
-    public void deleteCourse(Course course) {
-        this.createdCourses.remove(course.getID());
+    public void deleteCourse(String courseID) {
+        createdCourses.remove(courseID);
 
-        db.removeCourse(course.getID());
+        db.removeCourse(courseID);
         db.saveUsers();
     }
 

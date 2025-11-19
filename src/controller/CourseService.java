@@ -52,8 +52,7 @@ public class CourseService {
                 }
             }
         }
-        ins.removeCourse(courseID);
-        db.removeCourse(courseID);
+        ins.deleteCourse(courseID);
         return true;
     }
 
