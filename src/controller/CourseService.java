@@ -19,6 +19,31 @@ public class CourseService {
         return db.getCourses();
     }
 
+    public boolean createCourse(String instructorID, String courseTitle, String courseDesc) {
+        Instructor ins = (Instructor) db.findUserById(instructorID);
+        if (ins == null) {
+            throw new IllegalArgumentException("Instructor not found!");
+        }
+        if (courseTitle == null) {
+            throw new IllegalArgumentException("Course title cannot be empty!");
+        }
+        if (courseDesc == null) {
+            throw new IllegalArgumentException("Course description cannot be empty!");
+        }
+        ins.createCourse(courseTitle, courseDesc);
+        return true;
+    }
+
+    public boolean deleteCourse(String instructorID, String courseID) {
+        Instructor ins = (Instructor) db.findUserById(instructorID);
+        if (ins == null || db.findCourseById(courseID) == null) {
+            return false;
+        }
+        ins.removeCourse(courseID);
+        db.removeCourse(courseID);
+        return true;
+    }
+
     public ArrayList<Course> getEnrolledCourses(String studentId) {
         User user = db.findUserById(studentId);
         if (user instanceof Student student) {

@@ -20,7 +20,7 @@ public class UserService {
      * @param password plainText password
      * @return true only if login succeeds
      */
-    public boolean login(String input, String password) {
+    public User login(String input, String password) {
         User u;
         if (db.isValidEmail(input)) {
             u = db.findUserByEmail(input);
@@ -28,9 +28,9 @@ public class UserService {
             u = db.findUserByUsername(input);
         }
         if (u == null) {
-            return false;
+            return null;
         }
-        return u.isPasswordCorrect(password);
+        return u.isPasswordCorrect(password)? u : null;
     }
 
     public boolean registerStudent(String username, String email, String password) throws IllegalArgumentException {
@@ -66,7 +66,7 @@ public class UserService {
         if (u instanceof Instructor ins) {
             // delete every course created by this instructor
             for (String courseId : ins.getCreatedCourses()) {
-                Course c = JsonDatabaseManager.findCourseById(courseId);
+                Course c = db.findCourseById(courseId);
                 if (c != null) {
                     for (String studentId : c.getEnrolledStudents()) {
                         Student st = (Student) db.findUserById(studentId);
@@ -79,7 +79,7 @@ public class UserService {
                         }
                     }
                 }
-                JsonDatabaseManager.removeCourse(courseId);
+                db.removeCourse(courseId);
             }
         }
         JsonDatabaseManager.removeUser(u);

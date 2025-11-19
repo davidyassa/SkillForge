@@ -26,7 +26,7 @@ public class StudentCourseProgress {
     }
 
     public void updateProgress() {
-        Course c = JsonDatabaseManager.findCourseById(courseID);
+        Course c = new JsonDatabaseManager("users.json", "courses.json").findCourseById(courseID);
         if (c == null || c.getLessons().isEmpty()) {
             progress = 0;
             return;

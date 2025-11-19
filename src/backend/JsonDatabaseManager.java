@@ -89,7 +89,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public static Course findCourseById(String courseID) {
+    public Course findCourseById(String courseID) {
         for (Course course : courses) {
             if (course.getID().equals(courseID)) {
                 return course;
@@ -98,7 +98,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public static Lesson findLessonById(String lessonID) {
+    public Lesson findLessonById(String lessonID) {
         for (Course c : courses) {
             for (Lesson l : c.getLessons()) {
                 if (l.getID().equals(lessonID)) {
@@ -129,7 +129,7 @@ public class JsonDatabaseManager {
         saveCourses();
     }
 
-    public static void removeCourse(String courseId) {
+    public void removeCourse(String courseId) {
         courses.removeIf(c -> c.getID().equals(courseId));
         saveCourses();
     }
@@ -148,7 +148,7 @@ public class JsonDatabaseManager {
         return list;
     }
 
-    public static ArrayList<Course> getCoursesForStudent(Student student) {
+    public ArrayList<Course> getCoursesForStudent(Student student) {
         ArrayList<Course> list = new ArrayList<>();
         for (String courseId : student.getEnrolledCourses()) {
             Course course = findCourseById(courseId);
@@ -159,7 +159,7 @@ public class JsonDatabaseManager {
         return list;
     }
 
-    public static void enrollStudentInCourse(Student student, Course course) {
+    public void enrollStudentInCourse(Student student, Course course) {
         student.enrollCourse(course.getID());
         course.enrollStudent(student.getID());
         if (student.getSCP(course.getID()) == null) {
@@ -252,14 +252,6 @@ public class JsonDatabaseManager {
         }
     }
 
-//    public static void saveUsers() {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        try (FileWriter writer = new FileWriter(usersFile)) {
-//            gson.toJson(users, writer);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
     public static void saveUsers() {
         Gson g = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter w = new FileWriter(usersFile)) {

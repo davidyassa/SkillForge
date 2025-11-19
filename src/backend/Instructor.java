@@ -47,10 +47,8 @@ public class Instructor extends User {
                 courseTitle,
                 courseDesc,
                 getID());
-
         addCreatedCourse(id);
         JsonDatabaseManager.addCourse(c);
-        JsonDatabaseManager.saveCourses();
         JsonDatabaseManager.saveUsers();
 
         return c;
@@ -67,10 +65,9 @@ public class Instructor extends User {
     }
 
     public void deleteCourse(Course course) {
-        JsonDatabaseManager.removeCourse(course.getID());
         this.createdCourses.remove(course.getID());
 
-        JsonDatabaseManager.saveCourses();
+        new JsonDatabaseManager("users.json", "courses.json").removeCourse(course.getID());
         JsonDatabaseManager.saveUsers();
     }
 
