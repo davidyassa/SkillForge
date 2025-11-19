@@ -18,9 +18,9 @@ public class StudentCourseProgress {
     private double progress; //0 <= progress <= 100
     private final ArrayList<String> completedLessons = new ArrayList<>();
     private static JsonDatabaseManager db;
-    
-    public static void setDB(JsonDatabaseManager dbm){
-        db = dbm; 
+
+    public static void setDB(JsonDatabaseManager dbm) {
+        db = dbm;
     }
 
     public StudentCourseProgress(String studentID, String courseID) {

@@ -5,7 +5,8 @@
 package frontend;
 
 import javax.swing.*;
-import java.io.*;
+import controller.UserService;
+import backend.Student;
 
 public class SignupPanel extends JPanel {
 
@@ -44,21 +45,44 @@ public class SignupPanel extends JPanel {
         passwordField.setBounds(300, 220, 300, 40);
         add(passwordField);
 
-         JButton studentButton = new JButton("Student");
+        JButton studentButton = new JButton("Student");
         studentButton.setBounds(250, 300, 120, 40);
         add(studentButton);
 
         JButton instructorButton = new JButton("Instructor");
         instructorButton.setBounds(400, 300, 120, 40);
         add(instructorButton);
-        
-         JButton logoutButton = new JButton("Logout");
+
+        JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(325, 370, 150, 40);
         add(logoutButton);
-       // studentButton.addActionListener(e -> frame.switchPanel(new StudentDashboardFrame(frame)));
-        //instructorButton.addActionListener(e -> frame.switchPanel(new InstructorDashboardFrame(frame)));
+
+        UserService userService = frame.getUserService();
+
+        studentButton.addActionListener(e -> {
+            String email = emailField.getText().trim();
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword());
+
+            if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields!");
+                return;
+            }
+
+            try {
+                Student s = (Student) userService.registerStudent(username, email, password);
+                frame.setCurrentStudent(s);
+                JOptionPane.showMessageDialog(this, "Account created successfully!");
+                frame.switchPanel(new StudentDashboardFrame(frame));
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        instructorButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Instructor registration not implemented yet.");
+        });
 
         logoutButton.addActionListener(e -> frame.showMainMenu());
     }
-    
 }

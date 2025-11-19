@@ -113,7 +113,7 @@ public class JsonDatabaseManager {
     }
 
     public boolean isValidEmail(String input) { //validate and detect emails
-        return input.matches("^[^@]{2,}@[A-Za-z0-9._-]{2,}\\.[A-Za-z0-9._-]{2,}$");
+        return input.matches("^[^@]{2,}@[A-Za-z0-9.-]{2,}\\.[A-Za-z0-9.-]{2,}$");
         //format: ab@cd.ef
     }
 
@@ -141,7 +141,7 @@ public class JsonDatabaseManager {
         this.saveCourses();
     }
 
-    public static ArrayList<Course> getCoursesForInstructor(String instructorId) {
+    public ArrayList<Course> getCoursesForInstructor(String instructorId) {
         ArrayList<Course> list = new ArrayList<>();
         for (Course course : courses) {
             if (course.getInstructorId().equals(instructorId)) {

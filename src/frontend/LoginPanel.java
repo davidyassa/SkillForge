@@ -5,7 +5,10 @@
 package frontend;
 
 import javax.swing.*;
-import java.io.*;
+import controller.UserService;
+import backend.Student;
+import backend.Instructor;
+import backend.User;
 
 public class LoginPanel extends JPanel {
 
@@ -20,7 +23,7 @@ public class LoginPanel extends JPanel {
         loginword.setBounds(400, 25, 200, 60);
         add(loginword);
 
-        JLabel gmail = new JLabel("Gmail:");
+        JLabel gmail = new JLabel("Gmail / Username:");
         gmail.setBounds(100, 100, 200, 60);
         add(gmail);
 
@@ -36,50 +39,40 @@ public class LoginPanel extends JPanel {
         passwordField.setBounds(300, 220, 300, 40);
         add(passwordField);
 
-       
-        JButton studentButton = new JButton("Student");
-        studentButton.setBounds(250, 300, 120, 40);
-        add(studentButton);
+        JButton loginButton = new JButton("Login");
+        loginButton.setBounds(325, 300, 150, 40);
+        add(loginButton);
 
-        JButton instructorButton = new JButton("Instructor");
-        instructorButton.setBounds(400, 300, 120, 40);
-        add(instructorButton);
-        
-         JButton logoutButton = new JButton("Logout");
+        JButton logoutButton = new JButton("Logout");
         logoutButton.setBounds(325, 370, 150, 40);
         add(logoutButton);
 
-          // studentButton.addActionListener(e -> frame.switchPanel(new StudentDashboardFrame(frame)));
-           //instructorButton.addActionListener(e -> frame.switchPanel(new InstructorDashboardFrame(frame)));
+        UserService userService = frame.getUserService();
 
-        logoutButton.addActionListener(e -> frame.showMainMenu());
-       /* loginButton.addActionListener(e -> {
-            String gmailInput = gmailField.getText().trim();
-            String passwordInput = new String(passwordField.getPassword()).trim();
+        loginButton.addActionListener(e -> {
+            String input = gmailField.getText().trim();
+            String passwordinput = new String(passwordField.getPassword()).trim();
 
-            if (checkCredentials(gmailInput, passwordInput)) {
+            if (input.isEmpty() || passwordinput.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields!");
+                return;
+            }
+
+            User user = userService.login(input, passwordinput);
+            if (user == null) {
+                JOptionPane.showMessageDialog(this, "Invalid email/username or password!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (user instanceof Student s) {
+                frame.setCurrentStudent(s);
                 frame.switchPanel(new StudentDashboardFrame(frame));
-            } else {
-                JOptionPane.showMessageDialog(this, "Invalid Gmail or password.");
+            } else if (user instanceof Instructor i) {
+                frame.setCurrentInstructor(i);
+                frame.switchPanel(new InstructorDashboardFrame(frame));
             }
         });
-    }
 
-    private boolean checkCredentials(String gmail, String password) {
-        try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    if (parts[0].trim().equals(gmail) && parts[1].trim().equals(password)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage());
-        }
-        return false;
-    }*/
+        logoutButton.addActionListener(e -> frame.showMainMenu());
     }
 }
