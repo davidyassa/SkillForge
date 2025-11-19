@@ -8,6 +8,8 @@ import backend.Course;
 import backend.Instructor;
 import backend.JsonDatabaseManager;
 import controller.CourseService;
+import java.util.logging.Logger;
+import backend.JsonDatabaseManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,11 +21,18 @@ public class InstructorDashboardFrame extends JPanel {
     private CourseService courseService;
     private static JsonDatabaseManager db;
     private FrameManager frame;
-
-    public void setDB(JsonDatabaseManager dbm) {
+  
+   public void setDB(JsonDatabaseManager dbm) {
         db = dbm;
     }
 
+    public InstructorDashboardFrame(Instructor instructor) {
+        this.currentInstructor = instructor;
+        JsonDatabaseManager dbManager = new JsonDatabaseManager("users.json", "courses.json");
+        this.courseService = new CourseService(dbManager);
+        initComponents();
+        customInit();
+   
     private DefaultListModel<Course> createdCoursesModel;
     private JList<Course> createdCoursesList;
     private JButton createCourseButton;
@@ -41,6 +50,18 @@ public class InstructorDashboardFrame extends JPanel {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+    private void customInit() {
+if (currentInstructor != null) {
+            setTitle("Instructor Dashboard - " + currentInstructor.getUsername());
+        } else {
+             setTitle("Instructor Dashboard");
+        }
+
+        loadCoursesData();
+    }
+
+    private void loadCoursesData() {
+logger.info("Loading courses for instructor: " + (currentInstructor != null ? currentInstructor.getUsername() : "Unknown"));
         welcomeLabel = new JLabel("Welcome, " + currentInstructor.getUsername());
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
         topPanel.add(welcomeLabel, BorderLayout.WEST);
