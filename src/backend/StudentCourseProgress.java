@@ -17,6 +17,11 @@ public class StudentCourseProgress {
     private boolean isCourseCompleted;
     private double progress; //0 <= progress <= 100
     private final ArrayList<String> completedLessons = new ArrayList<>();
+    private static JsonDatabaseManager db;
+
+    public static void setDB(JsonDatabaseManager dbm) {
+        db = dbm;
+    }
 
     public StudentCourseProgress(String studentID, String courseID) {
         this.studentID = studentID;
@@ -26,7 +31,7 @@ public class StudentCourseProgress {
     }
 
     public void updateProgress() {
-        Course c = JsonDatabaseManager.findCourseById(courseID);
+        Course c = db.findCourseById(courseID);
         if (c == null || c.getLessons().isEmpty()) {
             progress = 0;
             return;

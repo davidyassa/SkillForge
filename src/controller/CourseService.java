@@ -19,6 +19,43 @@ public class CourseService {
         return db.getCourses();
     }
 
+    public boolean createCourse(String instructorID, String courseTitle, String courseDesc) {
+        Instructor ins = (Instructor) db.findUserById(instructorID);
+        if (ins == null) {
+            throw new IllegalArgumentException("Instructor not found!");
+        }
+        if (courseTitle == null) {
+            throw new IllegalArgumentException("Course title cannot be empty!");
+        }
+        if (courseDesc == null) {
+            throw new IllegalArgumentException("Course description cannot be empty!");
+        }
+        ins.createCourse(courseTitle, courseDesc);
+        return true;
+    }
+
+    public boolean deleteCourse(String instructorID, String courseID) {
+        Instructor ins = (Instructor) db.findUserById(instructorID);
+        Course c = db.findCourseById(courseID);
+        if (ins == null || c == null) {
+            return false;
+        }
+
+        // Remove course from students
+        for (String studentId : c.getEnrolledStudents()) {
+            Student s = (Student) db.findUserById(studentId);
+            if (s != null) {
+                s.getEnrolledCourses().remove(courseID);
+                StudentCourseProgress scp = s.getSCP(courseID);
+                if (scp != null) {
+                    s.getAllProgress().remove(scp);
+                }
+            }
+        }
+        ins.deleteCourse(courseID);
+        return true;
+    }
+
     public ArrayList<Course> getEnrolledCourses(String studentId) {
         User user = db.findUserById(studentId);
         if (user instanceof Student student) {
@@ -51,8 +88,8 @@ public class CourseService {
             return false;
         }
         s.markLessonCompleted(courseId, lessonId);
-        JsonDatabaseManager.saveCourses();
-        JsonDatabaseManager.saveUsers();
+        db.saveCourses();
+        db.saveUsers();
         return true;
     }
 

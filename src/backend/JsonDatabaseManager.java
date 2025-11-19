@@ -23,6 +23,9 @@ public class JsonDatabaseManager {
     public JsonDatabaseManager(String usersFile, String coursesFile) {
         JsonDatabaseManager.usersFile = usersFile;
         JsonDatabaseManager.coursesFile = coursesFile;
+        StudentCourseProgress.setDB(this);
+        Instructor.setDB(this);
+
         loadUsers();
         loadCourses();
     }
@@ -46,11 +49,11 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static ArrayList<User> getUsers() {
+    public ArrayList<User> getUsers() {
         return users;
     }
 
-    public static ArrayList<Course> getCourses() {
+    public ArrayList<Course> getCourses() {
         return courses;
     }
 
@@ -89,7 +92,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public static Course findCourseById(String courseID) {
+    public Course findCourseById(String courseID) {
         for (Course course : courses) {
             if (course.getID().equals(courseID)) {
                 return course;
@@ -98,7 +101,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public static Lesson findLessonById(String lessonID) {
+    public Lesson findLessonById(String lessonID) {
         for (Course c : courses) {
             for (Lesson l : c.getLessons()) {
                 if (l.getID().equals(lessonID)) {
@@ -110,35 +113,35 @@ public class JsonDatabaseManager {
     }
 
     public boolean isValidEmail(String input) { //validate and detect emails
-        return input.matches("^[^@]{2,}@[A-Za-z0-9._-]{2,}\\.[A-Za-z0-9._-]{2,}$");
+        return input.matches("^[^@]{2,}@[A-Za-z0-9.-]{2,}\\.[A-Za-z0-9.-]{2,}$");
         //format: ab@cd.ef
     }
 
-    public static void addUser(User user) {
+    public void addUser(User user) {
         users.add(user);
-        saveUsers();
+        this.saveUsers();
     }
 
-    public static void removeUser(User user) {
+    public void removeUser(User user) {
         users.removeIf(u -> u.getID().equals(user.getID()));
-        saveUsers();
+        this.saveUsers();
     }
 
-    public static void addCourse(Course course) {
+    public void addCourse(Course course) {
         courses.add(course);
-        saveCourses();
+        this.saveCourses();
     }
 
-    public static void removeCourse(String courseId) {
+    public void removeCourse(String courseId) {
         courses.removeIf(c -> c.getID().equals(courseId));
         saveCourses();
     }
 
-    public static void updateCourses() {
-        saveCourses();
+    public void updateCourses() {
+        this.saveCourses();
     }
 
-    public static ArrayList<Course> getCoursesForInstructor(String instructorId) {
+    public ArrayList<Course> getCoursesForInstructor(String instructorId) {
         ArrayList<Course> list = new ArrayList<>();
         for (Course course : courses) {
             if (course.getInstructorId().equals(instructorId)) {
@@ -148,7 +151,7 @@ public class JsonDatabaseManager {
         return list;
     }
 
-    public static ArrayList<Course> getCoursesForStudent(Student student) {
+    public ArrayList<Course> getCoursesForStudent(Student student) {
         ArrayList<Course> list = new ArrayList<>();
         for (String courseId : student.getEnrolledCourses()) {
             Course course = findCourseById(courseId);
@@ -159,7 +162,7 @@ public class JsonDatabaseManager {
         return list;
     }
 
-    public static void enrollStudentInCourse(Student student, Course course) {
+    public void enrollStudentInCourse(Student student, Course course) {
         student.enrollCourse(course.getID());
         course.enrollStudent(student.getID());
         if (student.getSCP(course.getID()) == null) {
@@ -214,7 +217,7 @@ public class JsonDatabaseManager {
                 .registerSubtype(Instructor.class, "INSTRUCTOR");
     }
 
-    public static void loadUsers() {
+    public void loadUsers() {
         users.clear();
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(getUserAdapter())
@@ -234,7 +237,7 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static void loadCourses() {
+    public void loadCourses() {
         courses.clear();
         Gson gson = new GsonBuilder().create();
 
@@ -252,15 +255,7 @@ public class JsonDatabaseManager {
         }
     }
 
-//    public static void saveUsers() {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        try (FileWriter writer = new FileWriter(usersFile)) {
-//            gson.toJson(users, writer);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-    public static void saveUsers() {
+    public void saveUsers() {
         Gson g = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter w = new FileWriter(usersFile)) {
             g.toJson(users, w);
@@ -269,7 +264,7 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static void saveCourses() {
+    public void saveCourses() {
         Gson g = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter w = new FileWriter(coursesFile)) {
             g.toJson(courses, w);

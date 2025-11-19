@@ -20,7 +20,7 @@ public class UserService {
      * @param password plainText password
      * @return true only if login succeeds
      */
-    public boolean login(String input, String password) {
+    public User login(String input, String password) {
         User u;
         if (db.isValidEmail(input)) {
             u = db.findUserByEmail(input);
@@ -28,12 +28,12 @@ public class UserService {
             u = db.findUserByUsername(input);
         }
         if (u == null) {
-            return false;
+            return null;
         }
-        return u.isPasswordCorrect(password);
+        return u.isPasswordCorrect(password) ? u : null;
     }
 
-    public boolean registerStudent(String username, String email, String password) throws IllegalArgumentException {
+    public Student registerStudent(String username, String email, String password) throws IllegalArgumentException {
         if (userExistsByUsername(username)) {
             throw new IllegalArgumentException("Username already exists!");
         }
@@ -48,8 +48,27 @@ public class UserService {
         String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
 
         Student s = new Student(id, username, email, hash);
-        JsonDatabaseManager.addUser(s);
-        return true;
+        db.addUser(s);
+        return s;
+    }
+
+    public Instructor registerInstructor(String username, String email, String password) throws IllegalArgumentException {
+        if (userExistsByUsername(username)) {
+            throw new IllegalArgumentException("Username already exists!");
+        }
+        if (userExistsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists!");
+        }
+        if (!db.isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email!");
+        }
+
+        String id = JsonDatabaseManager.generateUserId();
+        String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
+
+        Instructor ins = new Instructor(id, username, email, hash);
+        db.addUser(ins);
+        return ins;
     }
 
     public boolean deleteUser(String userId) {
@@ -59,14 +78,14 @@ public class UserService {
         }
         if (u instanceof Student s) {
             // remove student from each course
-            for (Course c : JsonDatabaseManager.getCourses()) {
+            for (Course c : db.getCourses()) {
                 c.getEnrolledStudents().remove(s.getID());
             }
         }
         if (u instanceof Instructor ins) {
             // delete every course created by this instructor
             for (String courseId : ins.getCreatedCourses()) {
-                Course c = JsonDatabaseManager.findCourseById(courseId);
+                Course c = db.findCourseById(courseId);
                 if (c != null) {
                     for (String studentId : c.getEnrolledStudents()) {
                         Student st = (Student) db.findUserById(studentId);
@@ -79,10 +98,10 @@ public class UserService {
                         }
                     }
                 }
-                JsonDatabaseManager.removeCourse(courseId);
+                db.removeCourse(courseId);
             }
         }
-        JsonDatabaseManager.removeUser(u);
+        db.removeUser(u);
         return true;
     }
 
@@ -106,7 +125,7 @@ public class UserService {
         u.setUsername(newUsername);
         u.setEmail(newEmail);
 
-        JsonDatabaseManager.saveUsers();
+        db.saveUsers();
         return true;
     }
 
