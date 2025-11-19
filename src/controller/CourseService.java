@@ -36,8 +36,21 @@ public class CourseService {
 
     public boolean deleteCourse(String instructorID, String courseID) {
         Instructor ins = (Instructor) db.findUserById(instructorID);
-        if (ins == null || db.findCourseById(courseID) == null) {
+        Course c = db.findCourseById(courseID);
+        if (ins == null || c == null) {
             return false;
+        }
+
+        // Remove course from students
+        for (String studentId : c.getEnrolledStudents()) {
+            Student s = (Student) db.findUserById(studentId);
+            if (s != null) {
+                s.getEnrolledCourses().remove(courseID);
+                StudentCourseProgress scp = s.getSCP(courseID);
+                if (scp != null) {
+                    s.getAllProgress().remove(scp);
+                }
+            }
         }
         ins.removeCourse(courseID);
         db.removeCourse(courseID);
@@ -76,8 +89,8 @@ public class CourseService {
             return false;
         }
         s.markLessonCompleted(courseId, lessonId);
-        JsonDatabaseManager.saveCourses();
-        JsonDatabaseManager.saveUsers();
+        db.saveCourses();
+        db.saveUsers();
         return true;
     }
 

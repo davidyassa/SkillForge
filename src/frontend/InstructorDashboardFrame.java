@@ -4,52 +4,72 @@
  */
 package frontend;
 
-/**
- *
- * @author DELL 7550
- */
+import backend.Course;
 import backend.Instructor;
 import controller.CourseService;
-import java.util.logging.Logger;
 
-public class InstructorDashboardFrame extends javax.swing.JFrame {
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
 
-    private static final Logger logger = Logger.getLogger(InstructorDashboardFrame.class.getName());
+public class InstructorDashboardFrame extends JPanel {
 
     private Instructor currentInstructor;
     private CourseService courseService;
 
-    public InstructorDashboardFrame(Instructor instructor) {
-        this.currentInstructor = instructor;
-        initComponents();
-        customInit();
+    private DefaultListModel<Course> createdCoursesModel;
+    private JList<Course> createdCoursesList;
+    private JButton createCourseButton;
+    private JButton logoutButton;
+    private JLabel welcomeLabel;
+
+    public InstructorDashboardFrame(FrameManager frame) {
+        this.currentInstructor = frame.getCurrentInstructor();
+        this.courseService = frame.getCourseService();
+
+        setLayout(new BorderLayout(10, 10));
+
+        // Top panel
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        welcomeLabel = new JLabel("Welcome, " + currentInstructor.getUsername());
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        topPanel.add(welcomeLabel, BorderLayout.WEST);
+
+        logoutButton = new JButton("Logout");
+        topPanel.add(logoutButton, BorderLayout.EAST);
+
+        add(topPanel, BorderLayout.NORTH);
+
+        // Center panel: created courses
+        createdCoursesModel = new DefaultListModel<>();
+        createdCoursesList = new JList<>(createdCoursesModel);
+        createCourseButton = new JButton("Create New Course");
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setBorder(BorderFactory.createTitledBorder("My Created Courses"));
+        centerPanel.add(new JScrollPane(createdCoursesList), BorderLayout.CENTER);
+        centerPanel.add(createCourseButton, BorderLayout.SOUTH);
+
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Load instructor's courses
+        loadCreatedCourses();
+
+        // Action listeners
+        createCourseButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Course creation not implemented yet.");
+        });
+
+        logoutButton.addActionListener(e -> frame.showMainMenu());
     }
 
-    private void initComponents() {
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 300, Short.MAX_VALUE)
-        );
-
-        pack();
-    }// </editor-fold>                        
-
-    private void customInit() {
-        loadCoursesData();
+    private void loadCreatedCourses() {
+        createdCoursesModel.clear();
+        List<Course> courses = courseService.getCoursesByInstructor(currentInstructor.getID());
+        for (Course c : courses) {
+            createdCoursesModel.addElement(c);
+        }
     }
-
-    private void loadCoursesData() {
-        logger.info("Loading courses for instructor: " + currentInstructor.getUsername());
-
-    }
-
 }

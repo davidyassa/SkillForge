@@ -2,6 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package backend;
 
 import java.util.ArrayList;
@@ -9,6 +13,11 @@ import java.util.ArrayList;
 public class Instructor extends User {
 
     private ArrayList<String> createdCourses;
+    private static JsonDatabaseManager db;
+
+    public static void setDB(JsonDatabaseManager dbm) {
+        db = dbm;
+    }
 
     public Instructor(String userId, String username, String email, String passwordHash) {
         super(userId, "INSTRUCTOR", username, email, passwordHash);
@@ -48,8 +57,8 @@ public class Instructor extends User {
                 courseDesc,
                 getID());
         addCreatedCourse(id);
-        JsonDatabaseManager.addCourse(c);
-        JsonDatabaseManager.saveUsers();
+        db.addCourse(c);
+        db.saveUsers();
 
         return c;
     }
@@ -61,14 +70,14 @@ public class Instructor extends User {
         if (newDescription != null) {
             course.setDescription(newDescription);
         }
-        JsonDatabaseManager.saveCourses();
+        db.saveCourses();
     }
 
     public void deleteCourse(Course course) {
         this.createdCourses.remove(course.getID());
 
-        new JsonDatabaseManager("users.json", "courses.json").removeCourse(course.getID());
-        JsonDatabaseManager.saveUsers();
+        db.removeCourse(course.getID());
+        db.saveUsers();
     }
 
     public Lesson addLesson(Course course, String lessonTitle, String content) {
@@ -78,7 +87,7 @@ public class Instructor extends User {
                 content
         );
         course.getLessons().add(lesson);
-        JsonDatabaseManager.saveCourses();
+        db.saveCourses();
         return lesson;
     }
 
@@ -94,11 +103,11 @@ public class Instructor extends User {
                 break;
             }
         }
-        JsonDatabaseManager.saveCourses();
+        db.saveCourses();
     }
 
     public void deleteLesson(Course course, String lessonId) {
         course.getLessons().removeIf(l -> l.getID().equals(lessonId));
-        JsonDatabaseManager.saveCourses();
+        db.saveCourses();
     }
 }

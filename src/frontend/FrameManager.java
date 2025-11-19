@@ -5,18 +5,43 @@
 package frontend;
 
 import javax.swing.*;
+import controller.UserService;
+import controller.CourseService;
+import backend.JsonDatabaseManager;
+import backend.Student;
+import backend.Instructor;
 
 public class FrameManager extends JFrame {
+
+    private final JsonDatabaseManager db;
+    private final UserService userService;
+    private final CourseService courseService;
+
+    private Student currentStudent;
+    private Instructor currentInstructor;
 
     public FrameManager() {
         this.setTitle("Skill Forge");
         this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        showMainMenu() ;
-        
+
+        db = new JsonDatabaseManager("users.json", "courses.json");
+        userService = new UserService(db);
+        courseService = new CourseService(db);
+
+        showMainMenu();
         this.setVisible(true);
     }
+
+    public UserService getUserService() { return userService; }
+    public CourseService getCourseService() { return courseService; }
+
+    public void setCurrentStudent(Student s) { currentStudent = s; currentInstructor = null; }
+    public Student getCurrentStudent() { return currentStudent; }
+
+    public void setCurrentInstructor(Instructor i) { currentInstructor = i; currentStudent = null; }
+    public Instructor getCurrentInstructor() { return currentInstructor; }
 
     public void showMainMenu() {
         JPanel panel = new JPanel();

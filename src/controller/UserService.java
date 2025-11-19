@@ -33,7 +33,7 @@ public class UserService {
         return u.isPasswordCorrect(password)? u : null;
     }
 
-    public boolean registerStudent(String username, String email, String password) throws IllegalArgumentException {
+    public Student registerStudent(String username, String email, String password) throws IllegalArgumentException {
         if (userExistsByUsername(username)) {
             throw new IllegalArgumentException("Username already exists!");
         }
@@ -48,8 +48,8 @@ public class UserService {
         String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
 
         Student s = new Student(id, username, email, hash);
-        JsonDatabaseManager.addUser(s);
-        return true;
+        db.addUser(s);
+        return s;
     }
 
     public boolean deleteUser(String userId) {
@@ -59,7 +59,7 @@ public class UserService {
         }
         if (u instanceof Student s) {
             // remove student from each course
-            for (Course c : JsonDatabaseManager.getCourses()) {
+            for (Course c : db.getCourses()) {
                 c.getEnrolledStudents().remove(s.getID());
             }
         }
@@ -82,7 +82,7 @@ public class UserService {
                 db.removeCourse(courseId);
             }
         }
-        JsonDatabaseManager.removeUser(u);
+        db.removeUser(u);
         return true;
     }
 
@@ -106,7 +106,7 @@ public class UserService {
         u.setUsername(newUsername);
         u.setEmail(newEmail);
 
-        JsonDatabaseManager.saveUsers();
+        db.saveUsers();
         return true;
     }
 
