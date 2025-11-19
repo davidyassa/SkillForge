@@ -7,6 +7,7 @@ package frontend;
 import javax.swing.*;
 import controller.UserService;
 import backend.Student;
+import backend.Instructor;
 
 public class SignupPanel extends JPanel {
 
@@ -70,7 +71,7 @@ public class SignupPanel extends JPanel {
             }
 
             try {
-                Student s = (Student) userService.registerStudent(username, email, password);
+                Student s = userService.registerStudent(username, email, password);
                 frame.setCurrentStudent(s);
                 JOptionPane.showMessageDialog(this, "Account created successfully!");
                 frame.switchPanel(new StudentDashboardFrame(frame));
@@ -80,7 +81,23 @@ public class SignupPanel extends JPanel {
         });
 
         instructorButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Instructor registration not implemented yet.");
+            String email = emailField.getText().trim();
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword());
+
+            if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields!");
+                return;
+            }
+
+            try {
+                Instructor ins = userService.registerInstructor(username, email, password);
+                frame.setCurrentInstructor(ins);
+                JOptionPane.showMessageDialog(this, "Account created successfully!");
+                frame.switchPanel(new InstructorDashboardFrame(frame));
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         logoutButton.addActionListener(e -> frame.showMainMenu());

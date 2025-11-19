@@ -18,6 +18,7 @@ public class InstructorDashboardFrame extends JPanel {
     private Instructor currentInstructor;
     private CourseService courseService;
     private static JsonDatabaseManager db;
+    private FrameManager frame;
 
     public void setDB(JsonDatabaseManager dbm) {
         db = dbm;
@@ -30,6 +31,7 @@ public class InstructorDashboardFrame extends JPanel {
     private JLabel welcomeLabel;
 
     public InstructorDashboardFrame(FrameManager frame) {
+        this.frame = frame;
         this.currentInstructor = frame.getCurrentInstructor();
         this.courseService = frame.getCourseService();
 
