@@ -13,14 +13,17 @@ import controller.*;
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        JsonDatabaseManager db = new JsonDatabaseManager("users.json", "courses.json");
-        CourseService cServ = new CourseService(db);
-        UserService uServ = new UserService(db);
+    public static final JsonDatabaseManager db = new JsonDatabaseManager("users.json", "courses.json");
+    public static final UserService uServ = new UserService(db);
+    public static final CourseService cServ = new CourseService(db);
 
+    public static void main(String[] args) {
+        System.out.println(db.getUsers());
+        try {
+            uServ.registerStudent("abdo", "abdo", "abdo");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }

@@ -23,6 +23,9 @@ public class JsonDatabaseManager {
     public JsonDatabaseManager(String usersFile, String coursesFile) {
         JsonDatabaseManager.usersFile = usersFile;
         JsonDatabaseManager.coursesFile = coursesFile;
+        StudentCourseProgress.setDB(this);
+        Instructor.setDB(this);
+
         loadUsers();
         loadCourses();
     }
@@ -46,11 +49,11 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static ArrayList<User> getUsers() {
+    public ArrayList<User> getUsers() {
         return users;
     }
 
-    public static ArrayList<Course> getCourses() {
+    public ArrayList<Course> getCourses() {
         return courses;
     }
 
@@ -114,19 +117,19 @@ public class JsonDatabaseManager {
         //format: ab@cd.ef
     }
 
-    public static void addUser(User user) {
+    public void addUser(User user) {
         users.add(user);
-        saveUsers();
+        this.saveUsers();
     }
 
-    public static void removeUser(User user) {
+    public void removeUser(User user) {
         users.removeIf(u -> u.getID().equals(user.getID()));
-        saveUsers();
+        this.saveUsers();
     }
 
-    public static void addCourse(Course course) {
+    public void addCourse(Course course) {
         courses.add(course);
-        saveCourses();
+        this.saveCourses();
     }
 
     public void removeCourse(String courseId) {
@@ -134,8 +137,8 @@ public class JsonDatabaseManager {
         saveCourses();
     }
 
-    public static void updateCourses() {
-        saveCourses();
+    public void updateCourses() {
+        this.saveCourses();
     }
 
     public static ArrayList<Course> getCoursesForInstructor(String instructorId) {
@@ -214,7 +217,7 @@ public class JsonDatabaseManager {
                 .registerSubtype(Instructor.class, "INSTRUCTOR");
     }
 
-    public static void loadUsers() {
+    public void loadUsers() {
         users.clear();
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(getUserAdapter())
@@ -234,7 +237,7 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static void loadCourses() {
+    public void loadCourses() {
         courses.clear();
         Gson gson = new GsonBuilder().create();
 
@@ -252,7 +255,7 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static void saveUsers() {
+    public void saveUsers() {
         Gson g = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter w = new FileWriter(usersFile)) {
             g.toJson(users, w);
@@ -261,7 +264,7 @@ public class JsonDatabaseManager {
         }
     }
 
-    public static void saveCourses() {
+    public void saveCourses() {
         Gson g = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter w = new FileWriter(coursesFile)) {
             g.toJson(courses, w);
