@@ -44,7 +44,7 @@ public class Instructor extends User {
     }
 
     public Course createCourse(String courseTitle, String courseDesc) {
-        String id = JsonDatabaseManager.generateCourseId();
+        String id = JsonDatabaseManager.generateCourseID();
         Course c = new Course(
                 id,
                 courseTitle,
@@ -76,7 +76,7 @@ public class Instructor extends User {
 
     public Lesson addLesson(Course course, String lessonTitle, String content) {
         Lesson lesson = new Lesson(
-                JsonDatabaseManager.generateLessonId(course),
+                JsonDatabaseManager.generateLessonID(course),
                 lessonTitle,
                 content
         );

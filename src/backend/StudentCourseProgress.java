@@ -14,7 +14,7 @@ public class StudentCourseProgress {
 
     private final String studentID;
     private final String courseID;
-    private boolean isCourseCompleted;
+    private boolean courseCompleted;
     private double progress; //0 <= progress <= 100
     private final ArrayList<String> completedLessons = new ArrayList<>();
     private static JsonDatabaseManager db;
@@ -26,7 +26,7 @@ public class StudentCourseProgress {
     public StudentCourseProgress(String studentID, String courseID) {
         this.studentID = studentID;
         this.courseID = courseID;
-        isCourseCompleted = false;
+        courseCompleted = false;
         progress = 0.0d;
     }
 
@@ -46,7 +46,7 @@ public class StudentCourseProgress {
         progress = (completed / c.getLessons().size()) * 100;
 
         if (progress >= 100) {
-            isCourseCompleted = true;
+            courseCompleted = true;
         }
     }
 
@@ -57,8 +57,8 @@ public class StudentCourseProgress {
         }
     }
 
-    public boolean isIsCourseCompleted() {
-        return isCourseCompleted;
+    public boolean isCourseCompleted() {
+        return courseCompleted;
     }
 
     public double getProgress() {

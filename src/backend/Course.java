@@ -6,7 +6,7 @@ package backend;
 
 import java.util.ArrayList;
 
-public class Course {
+public class Course implements Searchable {
 
     private final String courseId;
     private String title;
@@ -47,6 +47,7 @@ public class Course {
         }
     }
 
+    @Override
     public String getID() {
         return courseId;
     }
