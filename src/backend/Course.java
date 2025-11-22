@@ -12,6 +12,7 @@ public class Course implements Searchable {
     private String title;
     private String description;
     private String instructorId;
+    private String approvalstate;
     private final ArrayList<Lesson> lessons;
     private final ArrayList<String> students; //student IDs
 
@@ -46,8 +47,23 @@ public class Course implements Searchable {
             students.add(studentId);
         }
     }
+    
+    public Boolean isApproved() {
+    return approvalstate != null && approvalstate.equalsIgnoreCase("APPROVED");
+}
 
+
+    public String getApprovalstate() {
+        return approvalstate;
+    }
+
+    public void setApprovalstate(String approvalstate) {
+        this.approvalstate = approvalstate;
+    }
+          
+            
     @Override
+
     public String getID() {
         return courseId;
     }

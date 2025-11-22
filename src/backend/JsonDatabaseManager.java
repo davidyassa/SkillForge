@@ -128,9 +128,12 @@ public class JsonDatabaseManager {
     }
 
     public void addCourse(Course course) {
-        courses.add(course);
-        this.saveCourses();
+    if (course.getApprovalstate() == null) {
+        course.setApprovalstate("PENDING");
     }
+    courses.add(course);
+    saveCourses();
+}
 
     public void removeCourse(String courseId) {
         courses.removeIf(c -> c.getID().equals(courseId));
@@ -280,4 +283,22 @@ public class JsonDatabaseManager {
             e.printStackTrace();
         }
     }
+    public ArrayList<Course> getPendingCourses() {
+    ArrayList<Course> list = new ArrayList<>();
+    for (Course c : courses) {
+        if (c.getApprovalstate() != null &&
+            c.getApprovalstate().equalsIgnoreCase("PENDING")) {
+            list.add(c);
+        }
+    }
+    return list;
+}
+    
+    
+public void updateCourseApproval(Course course, String newState) {
+    course.setApprovalstate(newState);
+    saveCourses();
+}
+
+
 }
