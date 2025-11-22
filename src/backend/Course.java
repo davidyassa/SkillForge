@@ -14,6 +14,7 @@ public class Course {
     private String instructorId;
     private final ArrayList<Lesson> lessons;
     private final ArrayList<String> students; //student IDs
+    private String approvalstate;
 
     public Course(String courseId, String title, String description, String instructorId) {
         this.courseId = courseId;
@@ -46,7 +47,21 @@ public class Course {
             students.add(studentId);
         }
     }
+    
+    public Boolean isApproved() {
+    return approvalstate != null && approvalstate.equalsIgnoreCase("APPROVED");
+}
 
+
+    public String getApprovalstate() {
+        return approvalstate;
+    }
+
+    public void setApprovalstate(String approvalstate) {
+        this.approvalstate = approvalstate;
+    }
+          
+            
     public String getID() {
         return courseId;
     }
