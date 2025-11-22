@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ *
+ * DO NOT EDIT THIS, THIS IS A LIBRARY CLASS
+ * 
+ */
 public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
 
     private final Class<?> baseType;

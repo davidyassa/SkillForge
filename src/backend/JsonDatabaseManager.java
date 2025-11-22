@@ -176,7 +176,7 @@ public class JsonDatabaseManager {
         saveCourses();
     }
 
-    public static String generateUserId() {
+    public static String generateUserID() {
         int id = 0;
         for (User u : users) {
             String numStr = u.getID().substring(1); //ignore "U"
@@ -188,7 +188,7 @@ public class JsonDatabaseManager {
         return "U" + String.valueOf(++id);
     }
 
-    public static String generateCourseId() {
+    public static String generateCourseID() {
         int id = 0;
         for (Course c : courses) {
             String numStr = c.getID().substring(1); //ignore "C"
@@ -199,34 +199,26 @@ public class JsonDatabaseManager {
         }
         return "C" + String.valueOf(++id);
     }
-//LessonID = CourseID + generatedID, e.g. C20 -> L2001
 
-    public static String generateLessonId(Course course) {
-        int max = 0;
-
+//LessonID = CourseID + generatedID, e.g. C20 -> L20-1
+    public static String generateLessonID(Course course) {
+        int id = 0;
+        String courseStr = course.getID().substring(1); //ignore "C"
+        int courseNum = Integer.parseInt(courseStr);
         for (Lesson l : course.getLessons()) {
-            String id = l.getID();
-
-            // Extract trailing digits
-            int i = id.length() - 1;
-            while (i >= 0 && Character.isDigit(id.charAt(i))) {
-                i--;
-            }
-
-            String numStr = id.substring(i + 1);  // trailing number only
-
-            if (!numStr.isEmpty()) {
-                try {
-                    int num = Integer.parseInt(numStr);
-                    if (num > max) {
-                        max = num;
-                    }
-                } catch (NumberFormatException ignored) {
-                }
+            int lessonNum = Integer.parseInt(l.getID().split("-")[1]);
+            if (id < lessonNum) {
+                id = lessonNum;
             }
         }
+        return "L" + String.valueOf(courseNum) + "-" + String.valueOf(++id);
+    }
 
-        return "L" + course.getID() + String.format("%02d", max + 1);
+    public static String generateCertificateID(String studentId, String courseId, String issueDate) {
+        String studentNum = studentId.substring(1);
+        String courseNum = courseId.substring(1);
+
+        return "CERT-" + issueDate + "-" + courseNum + "-" + studentNum;
     }
 
     private static RuntimeTypeAdapterFactory<User> getUserAdapter() { //Gson needs this to deal with extended classes 

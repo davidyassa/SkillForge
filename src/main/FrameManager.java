@@ -2,11 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package frontend;
+package main;
 
 import javax.swing.*;
-import controller.UserService;
-import controller.CourseService;
+import controller.*;
+import frontend.*;
 import backend.JsonDatabaseManager;
 import backend.Student;
 import backend.Instructor;

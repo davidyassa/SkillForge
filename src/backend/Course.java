@@ -6,15 +6,15 @@ package backend;
 
 import java.util.ArrayList;
 
-public class Course {
+public class Course implements Searchable {
 
     private final String courseId;
     private String title;
     private String description;
     private String instructorId;
+    private String approvalstate;
     private final ArrayList<Lesson> lessons;
     private final ArrayList<String> students; //student IDs
-    private String approvalstate;
 
     public Course(String courseId, String title, String description, String instructorId) {
         this.courseId = courseId;
@@ -62,6 +62,8 @@ public class Course {
     }
           
             
+    @Override
+
     public String getID() {
         return courseId;
     }

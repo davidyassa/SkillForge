@@ -4,6 +4,7 @@
  */
 package frontend;
 
+import main.FrameManager;
 import javax.swing.*;
 import controller.UserService;
 import backend.Student;
