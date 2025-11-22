@@ -4,7 +4,7 @@
  */
 package backend;
 
-public abstract class User {
+public abstract class User implements Searchable {
 
     private final String userID;
     private final String role;

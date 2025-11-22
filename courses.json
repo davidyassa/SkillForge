@@ -1,61 +1,36 @@
 [
-  {
-    "courseId": "C1",
-    "title": "Course1",
-    "description": "Desc1",
-    "instructorId": "U1",
-    "lessons": [
-      {
-        "lessonID": "LC101",
-        "title": "L1",
-        "content": "sdfa"
-      },
-      {
-        "lessonID": "LC1102",
-        "title": "L2",
-        "content": "sdfasdf"
-      },
-      {
-        "lessonID": "LC11103",
-        "title": "L3",
-        "content": "sdfasdf"
-      }
-    ],
-    "students": [
-      "U2"
-    ]
-  },
-  {
-    "courseId": "C2",
-    "title": "Course2",
-    "description": "Desc2",
-    "instructorId": "U1",
-    "lessons": [
-      {
-        "lessonID": "LC201",
-        "title": "L1",
-        "content": "asdf"
-      }
-    ],
-    "students": [
-      "U3"
-    ]
-  },
-  {
-    "courseId": "C3",
-    "title": "Course3",
-    "description": "Desc3",
-    "instructorId": "U1",
-    "lessons": [
-      {
-        "lessonID": "LC301",
-        "title": "L1,2,3",
-        "content": "awdf"
-      }
-    ],
-    "students": [
-      "U2",
-      "U3"
-    ]
-  }
+    {
+        "courseId": "C2",
+        "title": "Course2",
+        "description": "Desc2",
+        "instructorId": "U1",
+        "lessons": [
+            {
+                "lessonID": "LC201",
+                "title": "L1",
+                "content": "asdf"
+            }
+        ],
+        "students": [
+            "U3",
+            "U5"
+        ]
+    },
+    {
+        "courseId": "C3",
+        "title": "Course3",
+        "description": "Desc3",
+        "instructorId": "U1",
+        "lessons": [
+            {
+                "lessonID": "LC301",
+                "title": "L1,2,3",
+                "content": "awdf"
+            }
+        ],
+        "students": [
+            "U2",
+            "U3"
+        ]
+    }
 ]

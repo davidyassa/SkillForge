@@ -44,7 +44,7 @@ public class UserService {
             throw new IllegalArgumentException("Invalid email!");
         }
 
-        String id = JsonDatabaseManager.generateUserId();
+        String id = JsonDatabaseManager.generateUserID();
         String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
 
         Student s = new Student(id, username, email, hash);
@@ -63,7 +63,7 @@ public class UserService {
             throw new IllegalArgumentException("Invalid email!");
         }
 
-        String id = JsonDatabaseManager.generateUserId();
+        String id = JsonDatabaseManager.generateUserID();
         String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
 
         Instructor ins = new Instructor(id, username, email, hash);

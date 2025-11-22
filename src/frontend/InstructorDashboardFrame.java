@@ -1,5 +1,6 @@
 package frontend;
 
+import main.FrameManager;
 import backend.Course;
 import backend.Instructor;
 import backend.Lesson;
