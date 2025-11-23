@@ -129,6 +129,11 @@ public class UserService {
         return true;
     }
 
+    public StudentCourseProgress getSCP(String studentID, String courseID) {
+        Student s = (Student) JsonDatabaseManager.findUserById(studentID);
+        return s.getSCP(courseID);
+    }
+
     public boolean userExistsById(String id) {
         return db.findUserById(id) != null;
     }

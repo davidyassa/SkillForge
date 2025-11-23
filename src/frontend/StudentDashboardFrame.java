@@ -79,10 +79,12 @@ public class StudentDashboardFrame extends JPanel {
         JPanel certificatesPanel = createPanel("Certificates Earned", certificatesList, null);
 
         JSplitPane lessonsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, lessonsPanel, certificatesPanel);
-        lessonsSplit.setResizeWeight(0.75);
+        lessonsSplit.setResizeWeight(0.8);
+        lessonsSplit.setDividerLocation(0.8);
 
         JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, availablePanel, enrolledPanel);
         mainSplit.setResizeWeight(0.5);
+        mainSplit.setDividerLocation(0.5);
 
         JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsSplit);
         rightSplit.setResizeWeight(0.66);
@@ -94,7 +96,10 @@ public class StudentDashboardFrame extends JPanel {
         loadCertificates();
 
         enrollButton.addActionListener(e -> enrollSelectedCourse());
-        completeLessonButton.addActionListener(e -> completeLesson());
+        completeLessonButton.addActionListener(e -> {
+            completeLesson();
+            
+        });
         enrolledCoursesList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 loadLessons();

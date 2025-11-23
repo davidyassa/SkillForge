@@ -102,10 +102,6 @@ public class CourseService {
         return db.findCourseById(id);
     }
 
-    public Certificate getCertificate(String id) {
-        return db.findCertificateById(id);
-    }
-
     public void saveCourses() {
         db.saveCourses();
     }

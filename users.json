@@ -26,9 +26,9 @@
         "progress": 100.0,
         "completedLessons": [
           "L1-1",
-          "L1-2",
+          "L1-4",
           "L1-3",
-          "L1-4"
+          "L1-2"
         ]
       },
       {
@@ -38,8 +38,8 @@
         "progress": 100.0,
         "completedLessons": [
           "L2-3",
-          "L2-1",
-          "L2-2"
+          "L2-2",
+          "L2-1"
         ]
       }
     ],
