@@ -17,6 +17,10 @@ public class StudentCourseProgress {
     private boolean courseCompleted;
     private double progress; //0 <= progress <= 100
     private final ArrayList<String> completedLessons = new ArrayList<>();
+    
+    // NEW: List to store the IDs of quizzes this specific student has passed
+    private final ArrayList<String> passedQuizzes = new ArrayList<>(); 
+    
     private static JsonDatabaseManager db;
 
     public static void setDB(JsonDatabaseManager dbm) {
@@ -78,4 +82,26 @@ public class StudentCourseProgress {
     public String getCourseID() {
         return courseID;
     }
+
+    // --- NEW METHODS START ---
+
+    /**
+     * Records that the student has passed a specific quiz.
+     * @param quizID The ID of the quiz passed.
+     */
+    public void passQuiz(String quizID) {
+        if (!passedQuizzes.contains(quizID)) {
+            passedQuizzes.add(quizID);
+        }
+    }
+
+    /**
+     * Checks if the student has already passed a specific quiz.
+     * @param quizID The ID of the quiz.
+     * @return true if passed, false otherwise.
+     */
+    public boolean isQuizPassed(String quizID) {
+        return passedQuizzes.contains(quizID);
+    }
+    // --- NEW METHODS END ---
 }

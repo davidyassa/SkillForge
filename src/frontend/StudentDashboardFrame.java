@@ -98,7 +98,7 @@ public class StudentDashboardFrame extends JPanel {
         enrollButton.addActionListener(e -> enrollSelectedCourse());
         completeLessonButton.addActionListener(e -> {
             completeLesson();
-            
+
         });
         enrolledCoursesList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -179,6 +179,30 @@ public class StudentDashboardFrame extends JPanel {
             JOptionPane.showMessageDialog(this, "Select a lesson.");
             return;
         }
+
+        if (!l.getQuizzes().isEmpty()) {
+            Quiz q = l.getQuizzes().get(0);
+
+            boolean alreadyPassed = frame.getQuizService().hasStudentPassedQuiz(currentStudent.getID(), c.getID(), q.getID());
+
+            if (!alreadyPassed) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                        "This lesson has a quiz. You must pass it to complete the lesson.\nTake quiz now?",
+                        "Quiz Required", JOptionPane.YES_NO_OPTION);
+
+                if (choice == JOptionPane.YES_OPTION) {
+                    QuizTakingDialog quizDialog = new QuizTakingDialog(frame, q, currentStudent.getID(), c.getID(), frame.getQuizService());
+                    quizDialog.setVisible(true);
+
+                    if (!quizDialog.isPassed()) {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+        }
+
         boolean ok = cs.completeLesson(currentStudent.getID(), c.getID(), l.getID());
         if (ok) {
             loadLessons();

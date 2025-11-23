@@ -18,6 +18,7 @@ public class FrameManager extends JFrame {
     private final CourseService courseService;
     private final CertificateService certService;
 
+    private final QuizService quizService;
     private Student currentStudent;
     private Instructor currentInstructor;
 
@@ -32,6 +33,7 @@ public class FrameManager extends JFrame {
         courseService = new CourseService(db);
         certService = new CertificateService(db);
 
+        quizService = new QuizService(db);
         showMainMenu();
         this.setVisible(true);
     }
@@ -103,5 +105,9 @@ public class FrameManager extends JFrame {
 
     public static void main(String[] args) {
         new FrameManager();
+    }
+
+    public QuizService getQuizService() {
+        return quizService;
     }
 }
