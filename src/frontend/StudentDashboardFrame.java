@@ -16,6 +16,7 @@ public class StudentDashboardFrame extends JPanel {
 
     private Student currentStudent;
     private CourseService cs;
+    private UserService us;
     private FrameManager frame;
 
     private DefaultListModel<Course> availableCoursesModel;
@@ -51,6 +52,7 @@ public class StudentDashboardFrame extends JPanel {
         this.frame = frame;
         this.currentStudent = frame.getCurrentStudent();
         this.cs = frame.getCourseService();
+        this.us = frame.getUserService();
 
         availableCoursesModel = new DefaultListModel<>();
         enrolledCoursesModel = new DefaultListModel<>();
@@ -214,7 +216,7 @@ public class StudentDashboardFrame extends JPanel {
         List<Course> all = cs.getAllCourses();
         List<String> enrolled = currentStudent.getEnrolledCourses();
         for (Course c : all) {
-            if (!enrolled.contains(c.getID())) {
+            if (!enrolled.contains(c.getID()) && c.isApproved()) {
                 availableCoursesModel.addElement(c);
             }
         }

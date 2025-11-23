@@ -1,70 +1,51 @@
 [
-    {
-        "courseId": "C1",
-        "title": "Prog2",
-        "description": "Java",
-        "instructorId": "U2",
-        "approvalstate": "PENDING",
-        "lessons": [
-            {
-                "lessonID": "L1-1",
-                "title": "Classes",
-                "content": "ABC",
-                "quizzes": []
-            },
-            {
-                "lessonID": "L1-2",
-                "title": "Methods",
-                "content": "A() B() C()",
-                "quizzes": []
-            },
-            {
-                "lessonID": "L1-3",
-                "title": "Inheritance",
-                "content": "A extends B",
-                "quizzes": []
-            },
-            {
-                "lessonID": "L1-4",
-                "title": "Generic",
-                "content": "\u003cT\u003e",
-                "quizzes": []
-            }
-        ],
-        "students": [
-            "U1",
-            "U3"
+  {
+    "courseId": "C1",
+    "title": "Prog2",
+    "description": "asdf",
+    "instructorId": "U2",
+    "approvalstate": "PENDING",
+    "lessons": [
+      {
+        "lessonID": "L1-1",
+        "title": "OOP",
+        "content": "asdf",
+        "quizzes": [
+          {
+            "quizId": "Q1-1-1",
+            "passed": false,
+            "questions": [
+              {
+                "questionText": "choose language",
+                "options": [
+                  "C",
+                  "Python",
+                  "Java",
+                  "Camel"
+                ],
+                "correctOptionIndex": 2
+              },
+              {
+                "questionText": "qwer",
+                "options": [
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ],
+                "correctOptionIndex": 1
+              }
+            ]
+          }
         ]
-    },
-    {
-        "courseId": "C2",
-        "title": "Electronics",
-        "description": "AC/DC",
-        "instructorId": "U2",
-        "approvalstate": "PENDING",
-        "lessons": [
-            {
-                "lessonID": "L2-1",
-                "title": "Diodes",
-                "content": "Fwd and Rev",
-                "quizzes": []
-            },
-            {
-                "lessonID": "L2-2",
-                "title": "Transistors",
-                "content": "PNP and NPN",
-                "quizzes": []
-            },
-            {
-                "lessonID": "L2-3",
-                "title": "Transistors (cont.)",
-                "content": "AC analysis",
-                "quizzes": []
-            }
-        ],
-        "students": [
-            "U1",
-            "U3"
-        ]
-    }
+      },
+      {
+        "lessonID": "L1-2",
+        "title": "ay7aga",
+        "content": "asdf",
+        "quizzes": []
+      }
+    ],
+    "students": []
+  }
 ]

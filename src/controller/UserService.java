@@ -71,6 +71,23 @@ public class UserService {
         return ins;
     }
 
+    public Admin registerAdmin(String username, String email, String password) throws IllegalArgumentException {
+        if (userExistsByUsername(username)) {
+            throw new IllegalArgumentException("Username already exists!");
+        }
+        if (userExistsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists!");
+        }
+        if (!db.isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email!");
+        }
+        String id = JsonDatabaseManager.generateUserID();
+        String hash = JsonDatabaseManager.HashUtil.hashPassword(password);
+        Admin admin = new Admin(id, username, email, hash);
+        db.addUser(admin);
+        return admin;
+    }
+
     public boolean deleteUser(String userId) {
         User u = db.findUserById(userId);
         if (u == null) {

@@ -4,6 +4,7 @@
  */
 package main;
 
+import backend.Admin;
 import javax.swing.*;
 import controller.*;
 import frontend.*;
@@ -21,6 +22,7 @@ public class FrameManager extends JFrame {
     private final QuizService quizService;
     private Student currentStudent;
     private Instructor currentInstructor;
+    private Admin currentAdmin;
 
     public FrameManager() {
         this.setTitle("Skill Forge");
@@ -71,6 +73,15 @@ public class FrameManager extends JFrame {
     public Instructor getCurrentInstructor() {
         return currentInstructor;
     }
+
+    public Admin getCurrentAdmin() {
+        return currentAdmin;
+    }
+
+    public void setCurrentAdmin(Admin currentAdmin) {
+        this.currentAdmin = currentAdmin;
+    }
+    
 
     public final void showMainMenu() {
         JPanel panel = new JPanel();
