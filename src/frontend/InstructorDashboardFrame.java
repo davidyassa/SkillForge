@@ -1,105 +1,257 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package frontend;
 
-import backend.Course;
 import backend.Instructor;
-import backend.JsonDatabaseManager;
+import backend.Course; 
+import backend.JsonDatabaseManager; 
 import controller.CourseService;
-import java.util.logging.Logger;
-import backend.JsonDatabaseManager;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout; 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Map; 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*; 
 
-public class InstructorDashboardFrame extends JPanel {
+public class InstructorDashboardFrame extends JFrame { 
+
+    private static final Logger logger = Logger.getLogger(InstructorDashboardFrame.class.getName());
 
     private Instructor currentInstructor;
     private CourseService courseService;
-    private static JsonDatabaseManager db;
-    private FrameManager frame;
-  
-   public void setDB(JsonDatabaseManager dbm) {
-        db = dbm;
-    }
+
+    private JList<Course> coursesList;
+    private DefaultListModel<Course> coursesListModel;
+    private JButton createCourseButton;
+    private JButton editCourseButton;
+    private JButton deleteCourseButton;
+    private JButton manageLessonsButton;
+    private JButton viewStudentsButton;
+    private JButton viewInsightsButton;
+    private JButton logoutButton;
 
     public InstructorDashboardFrame(Instructor instructor) {
         this.currentInstructor = instructor;
+
         JsonDatabaseManager dbManager = new JsonDatabaseManager("users.json", "courses.json");
+
         this.courseService = new CourseService(dbManager);
-        initComponents();
-        customInit();
-   
-    private DefaultListModel<Course> createdCoursesModel;
-    private JList<Course> createdCoursesList;
-    private JButton createCourseButton;
-    private JButton logoutButton;
-    private JLabel welcomeLabel;
 
-    public InstructorDashboardFrame(FrameManager frame) {
-        this.frame = frame;
-        this.currentInstructor = frame.getCurrentInstructor();
-        this.courseService = frame.getCourseService();
+        initComponents(); 
+        customInit(); 
+    }
 
-        setLayout(new BorderLayout(10, 10));
+    private void initComponents() {
+        setTitle("Instructor Dashboard - Welcome, " + currentInstructor.getUsername());
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        // Top panel
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        coursesListModel = new DefaultListModel<>();
+        coursesList = new JList<>(coursesListModel);
+        JScrollPane scrollPane = new JScrollPane(coursesList);
+        
+        createCourseButton = new JButton("Create Course"); 
+        editCourseButton = new JButton("Edit Course");     
+        deleteCourseButton = new JButton("Delete Course"); 
+        manageLessonsButton = new JButton("Manage Lessons"); 
+        viewStudentsButton = new JButton("View Students"); 
+        viewInsightsButton = new JButton("View Insights");
+        logoutButton = new JButton("Logout"); 
 
+        JPanel actionButtonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        actionButtonsPanel.add(createCourseButton);
+        actionButtonsPanel.add(editCourseButton);
+        actionButtonsPanel.add(deleteCourseButton);
+        actionButtonsPanel.add(manageLessonsButton);
+        actionButtonsPanel.add(viewStudentsButton);
+        actionButtonsPanel.add(viewInsightsButton);
+        
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(new JLabel("Your Courses:", SwingConstants.LEFT), BorderLayout.WEST);
+        headerPanel.add(logoutButton, BorderLayout.EAST);
+        
+        getContentPane().setLayout(new BorderLayout(5, 5)); 
+        getContentPane().add(headerPanel, BorderLayout.NORTH);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        getContentPane().add(actionButtonsPanel, BorderLayout.SOUTH);
+        
+        pack();
+        setSize(700, 500);
+        setLocationRelativeTo(null);
+
+
+        createCourseButton.addActionListener(this::createCourseButtonActionPerformed);
+        editCourseButton.addActionListener(this::editCourseButtonActionPerformed);
+        deleteCourseButton.addActionListener(this::deleteCourseButtonActionPerformed);
+        manageLessonsButton.addActionListener(this::manageLessonsButtonActionPerformed);
+        viewStudentsButton.addActionListener(this::viewStudentsButtonActionPerformed);
+        logoutButton.addActionListener(this::logoutButtonActionPerformed);
+        viewInsightsButton.addActionListener(this::viewInsightsButtonActionPerformed);
+    }
+    
     private void customInit() {
-if (currentInstructor != null) {
-            setTitle("Instructor Dashboard - " + currentInstructor.getUsername());
-        } else {
-             setTitle("Instructor Dashboard");
-        }
-
         loadCoursesData();
     }
 
     private void loadCoursesData() {
-logger.info("Loading courses for instructor: " + (currentInstructor != null ? currentInstructor.getUsername() : "Unknown"));
-        welcomeLabel = new JLabel("Welcome, " + currentInstructor.getUsername());
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        topPanel.add(welcomeLabel, BorderLayout.WEST);
+        logger.info("Loading courses for instructor: " + currentInstructor.getUsername());
 
-        logoutButton = new JButton("Logout");
-        topPanel.add(logoutButton, BorderLayout.EAST);
+        try {
+            List<Course> createdCourses = courseService.getCoursesByInstructorId(currentInstructor.getID());
+            
+            coursesListModel.clear();
+            if (createdCourses != null) {
+                for (Course course : createdCourses) {
+                    coursesListModel.addElement(course);
+                }
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error loading courses.", e);
+            JOptionPane.showMessageDialog(this, "Error loading courses: " + e.getMessage(), 
+                                         "Data Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
 
-        add(topPanel, BorderLayout.NORTH);
-
-        // Center panel: created courses
-        createdCoursesModel = new DefaultListModel<>();
-        createdCoursesList = new JList<>(createdCoursesModel);
-        createCourseButton = new JButton("Create New Course");
-
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setBorder(BorderFactory.createTitledBorder("My Created Courses"));
-        centerPanel.add(new JScrollPane(createdCoursesList), BorderLayout.CENTER);
-        centerPanel.add(createCourseButton, BorderLayout.SOUTH);
-
-        add(centerPanel, BorderLayout.CENTER);
-
-        // Load instructor's courses
-        loadCreatedCourses();
-
-        // Action listeners
-        createCourseButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Course creation not implemented yet.");
-        });
-
-        logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(e -> frame.showMainMenu());
+    private void createCourseButtonActionPerformed(ActionEvent evt) {
+        String title = JOptionPane.showInputDialog(this, "Enter course title:", "Create Course", JOptionPane.QUESTION_MESSAGE);
+        
+        if (title == null) return;
+        
+        String description = JOptionPane.showInputDialog(this, "Enter course description:", "Create Course", JOptionPane.QUESTION_MESSAGE);
+        
+        if (description == null) return;
+        
+        if (!title.trim().isEmpty() && !description.trim().isEmpty()) {
+            try {
+                courseService.createCourse(currentInstructor.getID(), title.trim(), description.trim());
+                JOptionPane.showMessageDialog(this, "Course created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                loadCoursesData();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Title and Description cannot be empty.", "Input Error", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
-    private void loadCreatedCourses() {
-        createdCoursesModel.clear();
-        List<Course> courses = db.getCoursesForInstructor(currentInstructor.getID());
-        for (Course c : courses) {
-            createdCoursesModel.addElement(c);
+    private void editCourseButtonActionPerformed(ActionEvent evt) {
+        Course selectedCourse = coursesList.getSelectedValue();
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Please select a course to edit.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+        
+        String newTitle = JOptionPane.showInputDialog(this, "Enter new title:", selectedCourse.getTitle());
+        if (newTitle == null) return; 
+
+        String newDescription = JOptionPane.showInputDialog(this, "Enter new description:", selectedCourse.getDescription());
+        if (newDescription == null) return; 
+
+        if (newTitle.trim().isEmpty() || newDescription.trim().isEmpty()) {
+             JOptionPane.showMessageDialog(this, "Title and Description cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+             return;
+        }
+
+        try {
+            courseService.editCourse(selectedCourse, newTitle.trim(), newDescription.trim()); 
+            loadCoursesData();
+            JOptionPane.showMessageDialog(this, "Course updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving changes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void deleteCourseButtonActionPerformed(ActionEvent evt) {
+        Course selectedCourse = coursesList.getSelectedValue();
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Please select a course to delete.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the course '" + selectedCourse.getTitle() + "'?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            
+            try {
+                if(courseService.deleteCourse(currentInstructor.getID(), selectedCourse.getID())) {
+                    loadCoursesData(); 
+                    JOptionPane.showMessageDialog(this, "Course deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Deletion failed. Course not found or instructor mismatch.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Data Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void manageLessonsButtonActionPerformed(ActionEvent evt) {
+        Course selectedCourse = coursesList.getSelectedValue();
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Please select a course to manage lessons.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        logger.info("Manage Lessons action initiated for: " + selectedCourse.getTitle());
+
+    }
+    
+    private void viewStudentsButtonActionPerformed(ActionEvent evt) {
+        Course selectedCourse = coursesList.getSelectedValue();
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Please select a course to view enrolled students.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        logger.info("View Students action initiated for: " + selectedCourse.getTitle());
+
+    }
+
+    private void viewInsightsButtonActionPerformed(ActionEvent evt) {
+        Course selectedCourse = coursesList.getSelectedValue();
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Please select a course to view insights.", "Selection Required", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Map<String, Object> insights = courseService.getCourseInsights(selectedCourse.getID());
+
+            StringBuilder insightMessage = new StringBuilder();
+            insightMessage.append("Course Insights: ").append(selectedCourse.getTitle()).append("\n\n");
+            
+            Double completion = (Double) insights.getOrDefault("completionPercentage", 0.0);
+            insightMessage.append("Course Completion: ").append(String.format("%.1f%%", completion)).append("\n\n");
+            
+
+            Map<String, Double> quizAverages = (Map<String, Double>) insights.getOrDefault("quizAverages", Map.of());
+            insightMessage.append("Quiz Averages per Lesson \n");
+            quizAverages.forEach((lesson, avg) -> 
+                insightMessage.append("- ").append(lesson).append(": ").append(String.format("%.1f%%", avg)).append("\n")
+            );
+            insightMessage.append("\n");
+            
+            Map<String, Double> studentScores = (Map<String, Double>) insights.getOrDefault("studentScores", Map.of());
+            insightMessage.append("Top Student Scores \n");
+            
+            studentScores.entrySet().stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .limit(3)
+                .forEach(entry -> 
+                    insightMessage.append("- ").append(entry.getKey()).append(": ").append(String.format("%.1f", entry.getValue())).append("\n")
+                );
+
+            JOptionPane.showMessageDialog(this, insightMessage.toString(), 
+                                          "Course Analytics", JOptionPane.INFORMATION_MESSAGE);
+
+            logger.info("View Insights action initiated for: " + selectedCourse.getTitle());
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error loading insights.", e);
+            JOptionPane.showMessageDialog(this, "Error loading course insights: " + e.getMessage(), 
+                                         "Data Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void logoutButtonActionPerformed(ActionEvent evt) {
+        logger.info("User " + currentInstructor.getUsername() + " logging out.");
+        this.dispose(); 
     }
 }

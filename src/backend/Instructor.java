@@ -1,24 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
- /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package backend;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Instructor extends User {
 
     private static JsonDatabaseManager db;
     private ArrayList<String> createdCourses = new ArrayList<>();
+    
+    private final Map<String, Double> courseAverageScores = new HashMap<>();
+    private final Map<String, Double> courseCompletionRates = new HashMap<>();
+
+    private final Map<String, Map<String, Double>> lessonQuizAverages = new HashMap<>();
 
     public static void setDB(JsonDatabaseManager dbm) {
         db = dbm;
     }
-
     public Instructor(String userId, String username, String email, String passwordHash) {
         super(userId, "INSTRUCTOR", username, email, passwordHash);
         this.createdCourses = new ArrayList<>();
@@ -32,7 +30,7 @@ public class Instructor extends User {
             createdCourses = new ArrayList<>();
         }
     }
-
+    
     public ArrayList<String> getCreatedCourses() {
         return createdCourses;
     }
@@ -42,26 +40,27 @@ public class Instructor extends User {
             createdCourses.add(courseId);
         }
     }
-
+    
     public Course createCourse(String courseTitle, String courseDesc) {
-        String id = JsonDatabaseManager.generateCourseId();
+        String id = db.generateCourseId();
         Course c = new Course(
                 id,
                 courseTitle,
                 courseDesc,
-                getID());
+                getID()); 
         addCourse(id);
         db.addCourse(c);
         db.saveUsers();
+        db.saveCourses();
 
         return c;
     }
 
     public void editCourse(Course course, String newTitle, String newDescription) {
-        if (newTitle != null) {
+        if (newTitle != null && !newTitle.trim().isEmpty()) {
             course.setTitle(newTitle);
         }
-        if (newDescription != null) {
+        if (newDescription != null && !newDescription.trim().isEmpty()) {
             course.setDescription(newDescription);
         }
         db.saveCourses();
@@ -74,9 +73,10 @@ public class Instructor extends User {
         db.saveUsers();
     }
 
+    
     public Lesson addLesson(Course course, String lessonTitle, String content) {
         Lesson lesson = new Lesson(
-                JsonDatabaseManager.generateLessonId(course),
+                db.generateLessonId(course),
                 lessonTitle,
                 content
         );
@@ -103,5 +103,79 @@ public class Instructor extends User {
     public void deleteLesson(Course course, String lessonId) {
         course.getLessons().removeIf(l -> l.getID().equals(lessonId));
         db.saveCourses();
+    }
+    
+    
+    public String getUserId() {
+        return getID(); 
+    }
+
+    
+    public double calculateCourseAverage(String courseId) {
+        Course c = db.findCourseById(courseId); 
+        if (c == null) return 0;
+
+        double total = 0;
+        int count = 0;
+
+        for (String stu : c.getEnrolledStudents()) {
+            Student s = (Student) db.findUserById(stu); 
+            if (s != null) {
+                double p = s.getProgress(courseId); 
+                total += p;
+                count++;
+            }
+        }
+
+        double avg = count == 0 ? 0 : total / count;
+        courseAverageScores.put(courseId, avg);
+        return avg;
+    }
+
+    public double calculateCompletionRate(String courseId) {
+        Course c = db.findCourseById(courseId);
+        if (c == null) return 0;
+
+        double completed = 0;
+        int total = c.getEnrolledStudents().size();
+
+        for (String stu : c.getEnrolledStudents()) {
+            Student s = (Student) db.findUserById(stu);
+            if (s != null && s.getProgress(courseId) == 100)
+                completed++;
+        }
+
+        double rate = total == 0 ? 0 : (completed / total) * 100;
+        courseCompletionRates.put(courseId, rate);
+        return rate;
+    }
+
+    public double getLessonQuizAverage(String courseId, String lessonId) {
+        StudentCourseProgress scp;
+        double total = 0;
+        int count = 0;
+
+        Course c = db.findCourseById(courseId);
+        if (c == null) return 0;
+
+        for (String stu : c.getEnrolledStudents()) {
+
+            Student s = (Student) db.findUserById(stu);
+            if (s != null) {
+
+                scp = s.getSCP(courseId);
+                if (scp != null && scp.getLessonScore(lessonId) != -1) {
+                    total += scp.getLessonScore(lessonId);
+                    count++;
+                }
+            }
+        }
+
+        double avg = count == 0 ? 0 : total / count;
+
+        lessonQuizAverages.putIfAbsent(courseId, new HashMap<>());
+        lessonQuizAverages.get(courseId).put(lessonId, avg);
+
+        return avg;
     }
 }
