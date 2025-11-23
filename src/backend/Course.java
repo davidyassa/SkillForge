@@ -77,6 +77,11 @@ public class Course implements Searchable {
         return description;
     }
 
+    public String getCourseTitle(String courseID) {
+        Course c = JsonDatabaseManager.findCourseById(courseID);
+        return c.getTitle();
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }

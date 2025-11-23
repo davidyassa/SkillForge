@@ -65,12 +65,12 @@ public class Lesson implements Searchable {
     public void removeQuiz(String quizID) {
         quizzes.removeIf(q -> q.getID().equals(quizID));
     }
-    
-    public int getLessonUniqueID(){
-        String [] parts = lessonID.split("-"); //L2-1
+
+    public int getLessonUniqueID() {
+        String[] parts = lessonID.split("-"); //L2-1
         return Integer.parseInt(parts[1]);
     }
-    
+
     @Override
     public String toString() {
         return title;

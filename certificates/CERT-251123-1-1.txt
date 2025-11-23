@@ -1,0 +1,7 @@
+====== CERTIFICATE ======
+Course        : Prog2
+Course ID     : C1
+Student ID    : U1
+Certificate ID: CERT-251123-1-1
+Issued On     : 23/11/2025
+========================

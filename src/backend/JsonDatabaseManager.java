@@ -26,8 +26,8 @@ public class JsonDatabaseManager {
         StudentCourseProgress.setDB(this);
         Instructor.setDB(this);
 
-        loadUsers();
         loadCourses();
+        loadUsers();
     }
 
     public static class HashUtil { //inner class for hashing passwords (SHA-256)
@@ -130,6 +130,11 @@ public class JsonDatabaseManager {
             }
         }
         return null;
+    }
+
+    public static String getCourseTitle(String courseID) {
+        Course c = findCourseById(courseID);
+        return c.getTitle();
     }
 
     public boolean isValidEmail(String input) { //validate and detect emails

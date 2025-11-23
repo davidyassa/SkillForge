@@ -207,13 +207,13 @@ public class InstructorDashboardFrame extends JPanel {
         JButton add = new JButton("Add");
         JButton edit = new JButton("Edit");
         JButton del = new JButton("Delete");
-        JButton addQuiz = new JButton("Add Quiz"); 
+        JButton addQuiz = new JButton("Add Quiz");
 
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
         bottom.add(add);
         bottom.add(edit);
         bottom.add(del);
-        bottom.add(addQuiz); 
+        bottom.add(addQuiz);
 
         JPanel content = new JPanel(new BorderLayout(8, 8));
         content.add(new JScrollPane(lessonList), BorderLayout.CENTER);
@@ -230,7 +230,7 @@ public class InstructorDashboardFrame extends JPanel {
                 JOptionPane.showMessageDialog(dlg, "Select a lesson first.");
                 return;
             }
-          
+
             new QuizCreationDialog((Frame) SwingUtilities.getWindowAncestor(this), selL, frame.getQuizService()).setVisible(true);
         });
         add.addActionListener(e -> {

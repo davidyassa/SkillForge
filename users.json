@@ -1,63 +1,115 @@
 [
-  {
-    "enrolledCourses": [
-      "C1",
-      "C2"
-    ],
-    "certificates": [
-      {
-        "studentId": "U1",
-        "courseId": "C2",
-        "certificateId": "CERT-251123-2-1",
-        "issueDate": "251123"
-      },
-      {
-        "studentId": "U1",
-        "courseId": "C1",
-        "certificateId": "CERT-251123-1-1",
-        "issueDate": "251123"
-      }
-    ],
-    "coursesProgress": [
-      {
-        "studentID": "U1",
-        "courseID": "C1",
-        "courseCompleted": true,
-        "progress": 100.0,
-        "completedLessons": [
-          "L1-1",
-          "L1-4",
-          "L1-3",
-          "L1-2"
-        ]
-      },
-      {
-        "studentID": "U1",
-        "courseID": "C2",
-        "courseCompleted": true,
-        "progress": 100.0,
-        "completedLessons": [
-          "L2-3",
-          "L2-2",
-          "L2-1"
-        ]
-      }
-    ],
-    "userID": "U1",
-    "role": "STUDENT",
-    "username": "user",
-    "email": "user@user.com",
-    "passwordHash": "04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb"
-  },
-  {
-    "createdCourses": [
-      "C1",
-      "C2"
-    ],
-    "userID": "U2",
-    "role": "INSTRUCTOR",
-    "username": "user2",
-    "email": "user2@user2.com",
-    "passwordHash": "6025d18fe48abd45168528f18a82e265dd98d421a7084aa09f61b341703901a3"
-  }
+    {
+        "enrolledCourses": [
+            "C1",
+            "C2"
+        ],
+        "certificates": [
+            {
+                "studentId": "U1",
+                "courseId": "C2",
+                "certificateId": "CERT-251123-2-1",
+                "issueDate": "251123"
+            },
+            {
+                "studentId": "U1",
+                "courseId": "C1",
+                "certificateId": "CERT-251123-1-1",
+                "issueDate": "251123"
+            }
+        ],
+        "coursesProgress": [
+            {
+                "studentID": "U1",
+                "courseID": "C1",
+                "courseCompleted": true,
+                "progress": 100.0,
+                "completedLessons": [
+                    "L1-1",
+                    "L1-4",
+                    "L1-3",
+                    "L1-2"
+                ]
+            },
+            {
+                "studentID": "U1",
+                "courseID": "C2",
+                "courseCompleted": true,
+                "progress": 100.0,
+                "completedLessons": [
+                    "L2-3",
+                    "L2-2",
+                    "L2-1"
+                ]
+            }
+        ],
+        "userID": "U1",
+        "role": "STUDENT",
+        "username": "user",
+        "email": "user@user.com",
+        "passwordHash": "04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb"
+    },
+    {
+        "createdCourses": [
+            "C1",
+            "C2"
+        ],
+        "userID": "U2",
+        "role": "INSTRUCTOR",
+        "username": "user2",
+        "email": "user2@user2.com",
+        "passwordHash": "6025d18fe48abd45168528f18a82e265dd98d421a7084aa09f61b341703901a3"
+    },
+    {
+        "enrolledCourses": [
+            "C1",
+            "C2"
+        ],
+        "certificates": [
+            {
+                "studentId": "U3",
+                "courseId": "C1",
+                "certificateId": "CERT-251123-1-3",
+                "issueDate": "251123"
+            },
+            {
+                "studentId": "U3",
+                "courseId": "C2",
+                "certificateId": "CERT-251123-2-3",
+                "issueDate": "251123"
+            }
+        ],
+        "coursesProgress": [
+            {
+                "studentID": "U3",
+                "courseID": "C1",
+                "courseCompleted": true,
+                "progress": 100.0,
+                "completedLessons": [
+                    "L1-1",
+                    "L1-3",
+                    "L1-4",
+                    "L1-2"
+                ],
+                "passedQuizzes": []
+            },
+            {
+                "studentID": "U3",
+                "courseID": "C2",
+                "courseCompleted": true,
+                "progress": 100.0,
+                "completedLessons": [
+                    "L2-2",
+                    "L2-3",
+                    "L2-1"
+                ],
+                "passedQuizzes": []
+            }
+        ],
+        "userID": "U3",
+        "role": "STUDENT",
+        "username": "student",
+        "email": "student@student.student",
+        "passwordHash": "264c8c381bf16c982a4e59b0dd4c6f7808c51a05f64c35db42cc78a2a72875bb"
+    }
 ]

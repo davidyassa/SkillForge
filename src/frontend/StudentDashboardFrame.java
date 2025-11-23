@@ -6,7 +6,7 @@ import backend.Course;
 import backend.Lesson;
 import backend.Quiz;
 import backend.Student;
-import controller.CourseService;
+import controller.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +31,18 @@ public class StudentDashboardFrame extends JPanel {
     private JButton enrollButton;
     private JButton completeLessonButton;
     private JButton logoutButton;
+    private JButton viewCertButton;
+    private JButton downloadCertButton;
+
+    private JPopupMenu downloadMenu;
+    private JMenuItem txtOption;
+    private JMenuItem pdfOption;
+
+    private JPanel availablePanel;
+    private JPanel enrolledPanel;
+    private JPanel lessonsPanel;
+    private JPanel certButtons;
+    private JPanel certificatesPanel;
 
     private JLabel studentNameLabel;
     private JLabel progressLabel;
@@ -69,14 +81,32 @@ public class StudentDashboardFrame extends JPanel {
         enrolledCoursesList = new JList<>(enrolledCoursesModel);
         lessonsList = new JList<>(lessonsModel);
         certificatesList = new JList<>(certificatesModel);
-
+        //Buttons
         enrollButton = new JButton("Enroll in Selected Course");
         completeLessonButton = new JButton("Mark Lesson as Completed");
+        viewCertButton = new JButton("View");
+        downloadCertButton = new JButton("Download ▼");
 
-        JPanel availablePanel = createPanel("Available Courses", availableCoursesList, enrollButton);
-        JPanel enrolledPanel = createPanel("My Courses", enrolledCoursesList, null);
-        JPanel lessonsPanel = createPanel("Lessons", lessonsList, completeLessonButton);
-        JPanel certificatesPanel = createPanel("Certificates Earned", certificatesList, null);
+        //Panels
+        availablePanel = createPanel("Available Courses", availableCoursesList, enrollButton);
+        enrolledPanel = createPanel("My Courses", enrolledCoursesList, null);
+        lessonsPanel = createPanel("Lessons", lessonsList, completeLessonButton);
+        certButtons = new JPanel(new GridLayout(1, 2, 10, 0));
+        certificatesPanel = new JPanel(new BorderLayout());
+
+        certificatesPanel.setBorder(BorderFactory.createTitledBorder("Certificates Earned"));
+        certificatesPanel.add(new JScrollPane(certificatesList), BorderLayout.CENTER);
+        certButtons.add(viewCertButton);
+        certButtons.add(downloadCertButton);
+        certificatesPanel.add(certButtons, BorderLayout.SOUTH);
+
+        // dropdown certView menu
+        downloadMenu = new JPopupMenu();
+        txtOption = new JMenuItem("Download as .txt");
+        pdfOption = new JMenuItem("Download as PDF");
+
+        downloadMenu.add(txtOption);
+        downloadMenu.add(pdfOption);
 
         JSplitPane lessonsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, lessonsPanel, certificatesPanel);
         lessonsSplit.setResizeWeight(0.8);
@@ -95,16 +125,78 @@ public class StudentDashboardFrame extends JPanel {
         loadEnrolledCourses();
         loadCertificates();
 
-        enrollButton.addActionListener(e -> enrollSelectedCourse());
-        completeLessonButton.addActionListener(e -> {
-            completeLesson();
-
+        downloadCertButton.addActionListener(e -> {
+            downloadMenu.show(downloadCertButton, 0, downloadCertButton.getHeight());
         });
+        enrollButton.addActionListener(e -> enrollSelectedCourse());
+        completeLessonButton.addActionListener(e -> completeLesson());
+        viewCertButton.addActionListener(e -> {
+            Certificate cert = certificatesList.getSelectedValue();
+            CertificateService certServ = frame.getCertService();
+            if (cert != null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        certServ.certificateText(cert),
+                        "Certificate Details",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
+        txtOption.addActionListener(e -> {
+            Certificate cert = certificatesList.getSelectedValue();
+            CertificateService certServ = frame.getCertService();
+            if (cert != null) {
+                certServ.saveAsTextFile(cert);
+                JOptionPane.showMessageDialog(this, "Certificate saved as TXT.");
+            }
+        });
+
+        pdfOption.addActionListener(e -> {
+            Certificate cert = certificatesList.getSelectedValue();
+            CertificateService certServ = frame.getCertService();
+
+            if (cert != null) {
+                certServ.saveAsPDF(cert);
+                JOptionPane.showMessageDialog(this, "Certificate saved as PDF.");
+            }
+        });
+
         enrolledCoursesList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 loadLessons();
             }
         });
+        lessonsList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+
+                Component comp = super.getListCellRendererComponent(
+                        list, value, index, isSelected, cellHasFocus);
+
+                Lesson lesson = (Lesson) value;
+                Course selectedCourse = enrolledCoursesList.getSelectedValue();
+
+                if (selectedCourse != null) {
+                    boolean completed = cs.isLessonCompleted(
+                            currentStudent.getID(),
+                            lesson.getID()
+                    );
+
+                    if (completed) {
+                        comp.setForeground(new Color(0, 128, 0));
+                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
+                    } else {
+                        comp.setForeground(Color.BLACK);
+                        comp.setFont(comp.getFont().deriveFont(Font.PLAIN));
+                    }
+                }
+
+                return comp;
+            }
+        });
+
     }
 
     private JPanel createPanel(String title, JComponent list, JButton button) {

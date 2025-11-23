@@ -98,6 +98,18 @@ public class CourseService {
         return true;
     }
 
+    public String lessonToCourseID(String lessonID) {
+        String[] parts = lessonID.split("-");
+        return "C" + parts[0].substring(1);
+    }
+
+    public boolean isLessonCompleted(String studentID, String lessonID) {
+        Student s = (Student) JsonDatabaseManager.findUserById(studentID);
+        StudentCourseProgress scp = s.getSCP(lessonToCourseID(lessonID));
+
+        return (scp != null) && scp.isLessonCompleted(lessonID);
+    }
+
     public Course getCourse(String id) {
         return db.findCourseById(id);
     }

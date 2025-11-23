@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-/*
+ /*
  * Question.java
  */
 package backend;
@@ -10,6 +10,7 @@ package backend;
 import java.util.ArrayList;
 
 public class Question {
+
     private String questionText;
     private ArrayList<String> options;
     private int correctOptionIndex; // 0 for the first option, 1 for second, etc.
