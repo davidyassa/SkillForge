@@ -16,7 +16,7 @@ public class FrameManager extends JFrame {
     private final JsonDatabaseManager db;
     private final UserService userService;
     private final CourseService courseService;
-
+    private final QuizService quizService; 
     private Student currentStudent;
     private Instructor currentInstructor;
 
@@ -29,7 +29,7 @@ public class FrameManager extends JFrame {
         db = new JsonDatabaseManager("users.json", "courses.json");
         userService = new UserService(db);
         courseService = new CourseService(db);
-
+        quizService = new QuizService(db);
         showMainMenu();
         this.setVisible(true);
     }
@@ -98,4 +98,8 @@ public class FrameManager extends JFrame {
     public static void main(String[] args) {
         new FrameManager();
     }
+
+public QuizService getQuizService() {
+    return quizService;
+}
 }
