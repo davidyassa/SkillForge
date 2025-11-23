@@ -1,7 +1,0 @@
-====== CERTIFICATE ======
-Course        : Electronics
-Course ID     : C2
-Student ID    : U1
-Certificate ID: CERT-251123-2-1
-Issued On     : 23/11/2025
-========================
