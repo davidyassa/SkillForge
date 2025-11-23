@@ -26,8 +26,8 @@ public class JsonDatabaseManager {
         StudentCourseProgress.setDB(this);
         Instructor.setDB(this);
 
-        loadUsers();
         loadCourses();
+        loadUsers();
     }
 
     public static class HashUtil { //inner class for hashing passwords (SHA-256)
@@ -57,6 +57,16 @@ public class JsonDatabaseManager {
         return courses;
     }
 
+    public static ArrayList<Certificate> getAllCertificates() {
+        ArrayList<Certificate> certs = new ArrayList<>();
+        for (User u : users) {
+            if (u instanceof Student) {
+                certs.addAll(((Student) u).getCertificates());
+            }
+        }
+        return certs;
+    }
+
     public ArrayList<String> getUsernames() {
         ArrayList<String> usernames = new ArrayList<>();
         for (User u : users) {
@@ -74,7 +84,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public User findUserById(String userID) {
+    public static User findUserById(String userID) {
         for (User user : users) {
             if (user.getID().equals(userID)) {
                 return user;
@@ -92,7 +102,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public Course findCourseById(String courseID) {
+    public static Course findCourseById(String courseID) {
         for (Course course : courses) {
             if (course.getID().equals(courseID)) {
                 return course;
@@ -101,7 +111,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public Lesson findLessonById(String lessonID) {
+    public static Lesson findLessonById(String lessonID) {
         for (Course c : courses) {
             for (Lesson l : c.getLessons()) {
                 if (l.getID().equals(lessonID)) {
@@ -110,6 +120,21 @@ public class JsonDatabaseManager {
             }
         }
         return null;
+    }
+
+    public Certificate findCertificateById(String certID) {
+        ArrayList<Certificate> certs = getAllCertificates();
+        for (Certificate cert : certs) {
+            if (cert.getID().equals(certID)) {
+                return cert;
+            }
+        }
+        return null;
+    }
+
+    public static String getCourseTitle(String courseID) {
+        Course c = findCourseById(courseID);
+        return c.getTitle();
     }
 
     public boolean isValidEmail(String input) { //validate and detect emails
@@ -128,12 +153,12 @@ public class JsonDatabaseManager {
     }
 
     public void addCourse(Course course) {
-    if (course.getApprovalstate() == null) {
-        course.setApprovalstate("PENDING");
+        if (course.getApprovalstate() == null) {
+            course.setApprovalstate("PENDING");
+        }
+        courses.add(course);
+        saveCourses();
     }
-    courses.add(course);
-    saveCourses();
-}
 
     public void removeCourse(String courseId) {
         courses.removeIf(c -> c.getID().equals(courseId));
@@ -200,18 +225,32 @@ public class JsonDatabaseManager {
         return "C" + String.valueOf(++id);
     }
 
+    public static String generateQuizID(String lessonID) {
+        int id = 0;
+        Lesson l = findLessonById(lessonID); // L2-1
+        String[] parts = lessonID.substring(1).split("-"); // {2,1}
+        String courseNum = parts[0];
+        String lessonNum = parts[1];
+        for (Quiz q : l.getQuizzes()) {
+            int quizNum = q.getQuizUniqueID();
+            if (id < quizNum) {
+                id = quizNum;
+            }
+        }
+        return "Q" + courseNum + "-" + lessonNum + "-" + ++id;
+    }
+
 //LessonID = CourseID + generatedID, e.g. C20 -> L20-1
     public static String generateLessonID(Course course) {
         int id = 0;
-        String courseStr = course.getID().substring(1); //ignore "C"
-        int courseNum = Integer.parseInt(courseStr);
+        String courseNum = course.getID().substring(1); //ignore "C"
         for (Lesson l : course.getLessons()) {
-            int lessonNum = Integer.parseInt(l.getID().split("-")[1]);
+            int lessonNum = l.getLessonUniqueID();
             if (id < lessonNum) {
                 id = lessonNum;
             }
         }
-        return "L" + String.valueOf(courseNum) + "-" + String.valueOf(++id);
+        return "L" + courseNum + "-" + ++id;
     }
 
     public static String generateCertificateID(String studentId, String courseId, String issueDate) {
@@ -228,7 +267,7 @@ public class JsonDatabaseManager {
                 .registerSubtype(Instructor.class, "INSTRUCTOR");
     }
 
-    public void loadUsers() {
+    public final void loadUsers() {
         users.clear();
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(getUserAdapter())
@@ -248,7 +287,7 @@ public class JsonDatabaseManager {
         }
     }
 
-    public void loadCourses() {
+    public final void loadCourses() {
         courses.clear();
         Gson gson = new GsonBuilder().create();
 
@@ -283,22 +322,21 @@ public class JsonDatabaseManager {
             e.printStackTrace();
         }
     }
-    public ArrayList<Course> getPendingCourses() {
-    ArrayList<Course> list = new ArrayList<>();
-    for (Course c : courses) {
-        if (c.getApprovalstate() != null &&
-            c.getApprovalstate().equalsIgnoreCase("PENDING")) {
-            list.add(c);
-        }
-    }
-    return list;
-}
-    
-    
-public void updateCourseApproval(Course course, String newState) {
-    course.setApprovalstate(newState);
-    saveCourses();
-}
 
+    public ArrayList<Course> getPendingCourses() {
+        ArrayList<Course> list = new ArrayList<>();
+        for (Course c : courses) {
+            if (c.getApprovalstate() != null
+                    && c.getApprovalstate().equalsIgnoreCase("PENDING")) {
+                list.add(c);
+            }
+        }
+        return list;
+    }
+
+    public void updateCourseApproval(Course course, String newState) {
+        course.setApprovalstate(newState);
+        saveCourses();
+    }
 
 }

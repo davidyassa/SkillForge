@@ -1,36 +1,51 @@
 [
-    {
-        "courseId": "C2",
-        "title": "Course2",
-        "description": "Desc2",
-        "instructorId": "U1",
-        "lessons": [
-            {
-                "lessonID": "LC201",
-                "title": "L1",
-                "content": "asdf"
-            }
-        ],
-        "students": [
-            "U3",
-            "U5"
+  {
+    "courseId": "C1",
+    "title": "Prog2",
+    "description": "asdf",
+    "instructorId": "U2",
+    "approvalstate": "PENDING",
+    "lessons": [
+      {
+        "lessonID": "L1-1",
+        "title": "OOP",
+        "content": "asdf",
+        "quizzes": [
+          {
+            "quizId": "Q1-1-1",
+            "passed": false,
+            "questions": [
+              {
+                "questionText": "choose language",
+                "options": [
+                  "C",
+                  "Python",
+                  "Java",
+                  "Camel"
+                ],
+                "correctOptionIndex": 2
+              },
+              {
+                "questionText": "qwer",
+                "options": [
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ],
+                "correctOptionIndex": 1
+              }
+            ]
+          }
         ]
-    },
-    {
-        "courseId": "C3",
-        "title": "Course3",
-        "description": "Desc3",
-        "instructorId": "U1",
-        "lessons": [
-            {
-                "lessonID": "LC301",
-                "title": "L1,2,3",
-                "content": "awdf"
-            }
-        ],
-        "students": [
-            "U2",
-            "U3"
-        ]
-    }
+      },
+      {
+        "lessonID": "L1-2",
+        "title": "ay7aga",
+        "content": "asdf",
+        "quizzes": []
+      }
+    ],
+    "students": []
+  }
 ]

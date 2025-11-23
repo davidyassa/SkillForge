@@ -4,10 +4,10 @@
  */
 package frontend;
 
+import main.FrameManager;
 import backend.Course;
 import backend.JsonDatabaseManager;
 import controller.CourseService;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

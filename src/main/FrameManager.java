@@ -4,6 +4,7 @@
  */
 package main;
 
+import backend.Admin;
 import javax.swing.*;
 import controller.*;
 import frontend.*;
@@ -16,9 +17,12 @@ public class FrameManager extends JFrame {
     private final JsonDatabaseManager db;
     private final UserService userService;
     private final CourseService courseService;
+    private final CertificateService certService;
 
+    private final QuizService quizService;
     private Student currentStudent;
     private Instructor currentInstructor;
+    private Admin currentAdmin;
 
     public FrameManager() {
         this.setTitle("Skill Forge");
@@ -29,7 +33,9 @@ public class FrameManager extends JFrame {
         db = new JsonDatabaseManager("users.json", "courses.json");
         userService = new UserService(db);
         courseService = new CourseService(db);
+        certService = new CertificateService(db);
 
+        quizService = new QuizService(db);
         showMainMenu();
         this.setVisible(true);
     }
@@ -44,6 +50,10 @@ public class FrameManager extends JFrame {
 
     public CourseService getCourseService() {
         return courseService;
+    }
+
+    public CertificateService getCertService() {
+        return certService;
     }
 
     public void setCurrentStudent(Student s) {
@@ -64,7 +74,16 @@ public class FrameManager extends JFrame {
         return currentInstructor;
     }
 
-    public void showMainMenu() {
+    public Admin getCurrentAdmin() {
+        return currentAdmin;
+    }
+
+    public void setCurrentAdmin(Admin currentAdmin) {
+        this.currentAdmin = currentAdmin;
+    }
+    
+
+    public final void showMainMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
@@ -97,5 +116,9 @@ public class FrameManager extends JFrame {
 
     public static void main(String[] args) {
         new FrameManager();
+    }
+
+    public QuizService getQuizService() {
+        return quizService;
     }
 }

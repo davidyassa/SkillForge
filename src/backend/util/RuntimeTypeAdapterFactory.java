@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  *
  * DO NOT EDIT THIS, THIS IS A LIBRARY CLASS
- * 
+ *
  */
 public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
 

@@ -6,7 +6,7 @@ package backend;
 
 import java.util.ArrayList;
 
-public class Course implements Searchable {
+public class Course {
 
     private final String courseId;
     private String title;
@@ -47,11 +47,10 @@ public class Course implements Searchable {
             students.add(studentId);
         }
     }
-    
-    public Boolean isApproved() {
-    return approvalstate != null && approvalstate.equalsIgnoreCase("APPROVED");
-}
 
+    public Boolean isApproved() {
+        return approvalstate != null && approvalstate.equalsIgnoreCase("APPROVED");
+    }
 
     public String getApprovalstate() {
         return approvalstate;
@@ -60,9 +59,6 @@ public class Course implements Searchable {
     public void setApprovalstate(String approvalstate) {
         this.approvalstate = approvalstate;
     }
-          
-            
-    @Override
 
     public String getID() {
         return courseId;
@@ -78,6 +74,11 @@ public class Course implements Searchable {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getCourseTitle(String courseID) {
+        Course c = JsonDatabaseManager.findCourseById(courseID);
+        return c.getTitle();
     }
 
     public void setDescription(String description) {

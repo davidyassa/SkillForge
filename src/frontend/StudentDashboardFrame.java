@@ -1,10 +1,12 @@
 package frontend;
 
+import backend.Certificate;
 import main.FrameManager;
 import backend.Course;
 import backend.Lesson;
+import backend.Quiz;
 import backend.Student;
-import controller.CourseService;
+import controller.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,20 +15,35 @@ import java.util.List;
 public class StudentDashboardFrame extends JPanel {
 
     private Student currentStudent;
-    private CourseService courseService;
+    private CourseService cs;
+    private UserService us;
     private FrameManager frame;
 
     private DefaultListModel<Course> availableCoursesModel;
     private DefaultListModel<Course> enrolledCoursesModel;
     private DefaultListModel<Lesson> lessonsModel;
+    private DefaultListModel<Certificate> certificatesModel;
 
     private JList<Course> availableCoursesList;
     private JList<Course> enrolledCoursesList;
     private JList<Lesson> lessonsList;
+    private JList<Certificate> certificatesList;
 
     private JButton enrollButton;
     private JButton completeLessonButton;
     private JButton logoutButton;
+    private JButton viewCertButton;
+    private JButton downloadCertButton;
+
+    private JPopupMenu downloadMenu;
+    private JMenuItem txtOption;
+    private JMenuItem pdfOption;
+
+    private JPanel availablePanel;
+    private JPanel enrolledPanel;
+    private JPanel lessonsPanel;
+    private JPanel certButtons;
+    private JPanel certificatesPanel;
 
     private JLabel studentNameLabel;
     private JLabel progressLabel;
@@ -34,11 +51,13 @@ public class StudentDashboardFrame extends JPanel {
     public StudentDashboardFrame(FrameManager frame) {
         this.frame = frame;
         this.currentStudent = frame.getCurrentStudent();
-        this.courseService = frame.getCourseService();
+        this.cs = frame.getCourseService();
+        this.us = frame.getUserService();
 
         availableCoursesModel = new DefaultListModel<>();
         enrolledCoursesModel = new DefaultListModel<>();
         lessonsModel = new DefaultListModel<>();
+        certificatesModel = new DefaultListModel<>();
 
         setLayout(new BorderLayout(10, 10));
 
@@ -48,7 +67,7 @@ public class StudentDashboardFrame extends JPanel {
         studentNameLabel = new JLabel("Welcome, " + currentStudent.getUsername());
         studentNameLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        progressLabel = new JLabel("Select a course to view progress");
+        progressLabel = new JLabel(" Select a course to view progress");
         progressLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
         topPanel.add(studentNameLabel, BorderLayout.WEST);
@@ -63,32 +82,123 @@ public class StudentDashboardFrame extends JPanel {
         availableCoursesList = new JList<>(availableCoursesModel);
         enrolledCoursesList = new JList<>(enrolledCoursesModel);
         lessonsList = new JList<>(lessonsModel);
-
+        certificatesList = new JList<>(certificatesModel);
+        //Buttons
         enrollButton = new JButton("Enroll in Selected Course");
         completeLessonButton = new JButton("Mark Lesson as Completed");
+        viewCertButton = new JButton("View");
+        downloadCertButton = new JButton("Download ▼");
 
-        JPanel availablePanel = createPanel("Available Courses", availableCoursesList, enrollButton);
-        JPanel enrolledPanel = createPanel("My Courses", enrolledCoursesList, null);
-        JPanel lessonsPanel = createPanel("Lessons", lessonsList, completeLessonButton);
+        //Panels
+        availablePanel = createPanel("Available Courses", availableCoursesList, enrollButton);
+        enrolledPanel = createPanel("My Courses", enrolledCoursesList, null);
+        lessonsPanel = createPanel("Lessons", lessonsList, completeLessonButton);
+        certButtons = new JPanel(new GridLayout(1, 2, 10, 0));
+        certificatesPanel = new JPanel(new BorderLayout());
+
+        certificatesPanel.setBorder(BorderFactory.createTitledBorder("Certificates Earned"));
+        certificatesPanel.add(new JScrollPane(certificatesList), BorderLayout.CENTER);
+        certButtons.add(viewCertButton);
+        certButtons.add(downloadCertButton);
+        certificatesPanel.add(certButtons, BorderLayout.SOUTH);
+
+        // dropdown certView menu
+        downloadMenu = new JPopupMenu();
+        txtOption = new JMenuItem("Download as .txt");
+        pdfOption = new JMenuItem("Download as PDF");
+
+        downloadMenu.add(txtOption);
+        downloadMenu.add(pdfOption);
+
+        JSplitPane lessonsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, lessonsPanel, certificatesPanel);
+        lessonsSplit.setResizeWeight(0.8);
+        lessonsSplit.setDividerLocation(0.8);
 
         JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, availablePanel, enrolledPanel);
         mainSplit.setResizeWeight(0.5);
+        mainSplit.setDividerLocation(0.5);
 
-        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsPanel);
+        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsSplit);
         rightSplit.setResizeWeight(0.66);
 
         add(rightSplit, BorderLayout.CENTER);
 
         loadAvailableCourses();
         loadEnrolledCourses();
+        loadCertificates();
 
+        downloadCertButton.addActionListener(e -> {
+            downloadMenu.show(downloadCertButton, 0, downloadCertButton.getHeight());
+        });
         enrollButton.addActionListener(e -> enrollSelectedCourse());
         completeLessonButton.addActionListener(e -> completeLesson());
+        viewCertButton.addActionListener(e -> {
+            Certificate cert = certificatesList.getSelectedValue();
+            CertificateService certServ = frame.getCertService();
+            if (cert != null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        certServ.certificateText(cert),
+                        "Certificate Details",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
+        txtOption.addActionListener(e -> {
+            Certificate cert = certificatesList.getSelectedValue();
+            CertificateService certServ = frame.getCertService();
+            if (cert != null) {
+                certServ.saveAsTextFile(cert);
+                JOptionPane.showMessageDialog(this, "Certificate saved as TXT.");
+            }
+        });
+
+        pdfOption.addActionListener(e -> {
+            Certificate cert = certificatesList.getSelectedValue();
+            CertificateService certServ = frame.getCertService();
+
+            if (cert != null) {
+                certServ.saveAsPDF(cert);
+                JOptionPane.showMessageDialog(this, "Certificate saved as PDF.");
+            }
+        });
+
         enrolledCoursesList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 loadLessons();
             }
         });
+        lessonsList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+
+                Component comp = super.getListCellRendererComponent(
+                        list, value, index, isSelected, cellHasFocus);
+
+                Lesson lesson = (Lesson) value;
+                Course selectedCourse = enrolledCoursesList.getSelectedValue();
+
+                if (selectedCourse != null) {
+                    boolean completed = cs.isLessonCompleted(
+                            currentStudent.getID(),
+                            lesson.getID()
+                    );
+
+                    if (completed) {
+                        comp.setForeground(new Color(0, 128, 0));
+                        comp.setFont(comp.getFont().deriveFont(Font.BOLD));
+                    } else {
+                        comp.setForeground(Color.BLACK);
+                        comp.setFont(comp.getFont().deriveFont(Font.PLAIN));
+                    }
+                }
+
+                return comp;
+            }
+        });
+
     }
 
     private JPanel createPanel(String title, JComponent list, JButton button) {
@@ -103,10 +213,10 @@ public class StudentDashboardFrame extends JPanel {
 
     private void loadAvailableCourses() {
         availableCoursesModel.clear();
-        List<Course> all = courseService.getAllCourses();
+        List<Course> all = cs.getAllCourses();
         List<String> enrolled = currentStudent.getEnrolledCourses();
         for (Course c : all) {
-            if (!enrolled.contains(c.getID())) {
+            if (!enrolled.contains(c.getID()) && c.isApproved()) {
                 availableCoursesModel.addElement(c);
             }
         }
@@ -114,7 +224,7 @@ public class StudentDashboardFrame extends JPanel {
 
     private void loadEnrolledCourses() {
         enrolledCoursesModel.clear();
-        List<Course> courses = courseService.getEnrolledCourses(currentStudent.getID());
+        List<Course> courses = cs.getEnrolledCourses(currentStudent.getID());
         for (Course c : courses) {
             enrolledCoursesModel.addElement(c);
         }
@@ -127,9 +237,19 @@ public class StudentDashboardFrame extends JPanel {
             for (Lesson l : c.getLessons()) {
                 lessonsModel.addElement(l);
             }
-            double p = courseService.getCourseProgress(currentStudent.getID(), c.getID());
+            double p = cs.getCourseProgress(currentStudent.getID(), c.getID());
             progressLabel.setText("Progress: " + String.format("%.1f%%", p));
         }
+        loadCertificates();
+    }
+
+    private void loadCertificates() {
+        certificatesModel.clear();
+        Student s = this.currentStudent;
+        for (Certificate cert : s.getCertificates()) {
+            certificatesModel.addElement(cert);
+        }
+
     }
 
     private void enrollSelectedCourse() {
@@ -138,7 +258,7 @@ public class StudentDashboardFrame extends JPanel {
             JOptionPane.showMessageDialog(this, "Select a course first.");
             return;
         }
-        boolean ok = courseService.enrollStudent(currentStudent.getID(), c.getID());
+        boolean ok = cs.enrollStudent(currentStudent.getID(), c.getID());
         if (ok) {
             loadAvailableCourses();
             loadEnrolledCourses();
@@ -153,9 +273,34 @@ public class StudentDashboardFrame extends JPanel {
             JOptionPane.showMessageDialog(this, "Select a lesson.");
             return;
         }
-        boolean ok = courseService.completeLesson(currentStudent.getID(), c.getID(), l.getID());
+
+        if (!l.getQuizzes().isEmpty()) {
+            Quiz q = l.getQuizzes().get(0);
+
+            boolean alreadyPassed = frame.getQuizService().hasStudentPassedQuiz(currentStudent.getID(), c.getID(), q.getID());
+
+            if (!alreadyPassed) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                        "This lesson has a quiz. You must pass it to complete the lesson.\nTake quiz now?",
+                        "Quiz Required", JOptionPane.YES_NO_OPTION);
+
+                if (choice == JOptionPane.YES_OPTION) {
+                    QuizTakingDialog quizDialog = new QuizTakingDialog(frame, q, currentStudent.getID(), c.getID(), frame.getQuizService());
+                    quizDialog.setVisible(true);
+
+                    if (!quizDialog.isPassed()) {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+        }
+
+        boolean ok = cs.completeLesson(currentStudent.getID(), c.getID(), l.getID());
         if (ok) {
             loadLessons();
+            loadCertificates();
             JOptionPane.showMessageDialog(this, "Lesson completed!");
         }
     }

@@ -4,9 +4,9 @@ import main.FrameManager;
 import backend.Course;
 import backend.Instructor;
 import backend.Lesson;
-import backend.JsonDatabaseManager;
 import backend.Student;
 import controller.CourseService;
+import controller.UserService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +19,8 @@ import java.util.List;
 public class InstructorDashboardFrame extends JPanel {
 
     private final FrameManager frame;
-    private final CourseService courseService;
-    private final JsonDatabaseManager db;
+    private final CourseService cs;
+    private final UserService us;
     private final Instructor currentInstructor;
 
     private DefaultListModel<Course> createdCoursesModel;
@@ -35,8 +35,8 @@ public class InstructorDashboardFrame extends JPanel {
 
     public InstructorDashboardFrame(FrameManager frame) {
         this.frame = frame;
-        this.courseService = frame.getCourseService();
-        this.db = frame.getDb();                     // add getDb() to FrameManager if missing
+        this.cs = frame.getCourseService();
+        this.us = frame.getUserService();
         this.currentInstructor = frame.getCurrentInstructor();
 
         initUI();
@@ -96,7 +96,7 @@ public class InstructorDashboardFrame extends JPanel {
             return;
         }
 
-        List<Course> courses = db.getCoursesForInstructor(currentInstructor.getID());
+        List<Course> courses = cs.getCoursesForInstructor(currentInstructor.getID());
         for (Course c : courses) {
             createdCoursesModel.addElement(c);
         }
@@ -125,10 +125,10 @@ public class InstructorDashboardFrame extends JPanel {
                 return;
             }
 
-            courseService.createCourse(currentInstructor.getID(), title, desc);
+            cs.createCourse(currentInstructor.getID(), title, desc);
             loadCreatedCourses();
-            db.saveCourses();
-            db.saveUsers();
+            cs.saveCourses();
+            us.saveUsers();
             JOptionPane.showMessageDialog(this, "Course created.");
         }
     }
@@ -165,7 +165,7 @@ public class InstructorDashboardFrame extends JPanel {
                 return;
             }
             currentInstructor.editCourse(sel, newTitle, newDesc);
-            db.saveCourses();
+            cs.saveCourses();
             loadCreatedCourses();
             JOptionPane.showMessageDialog(this, "Course updated.");
         }
@@ -181,10 +181,10 @@ public class InstructorDashboardFrame extends JPanel {
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
-        boolean ok = courseService.deleteCourse(currentInstructor.getID(), sel.getID());
+        boolean ok = cs.deleteCourse(currentInstructor.getID(), sel.getID());
         if (ok) {
-            db.saveCourses();
-            db.saveUsers();
+            cs.saveCourses();
+            us.saveUsers();
             loadCreatedCourses();
             JOptionPane.showMessageDialog(this, "Course deleted.");
         } else {
@@ -207,11 +207,13 @@ public class InstructorDashboardFrame extends JPanel {
         JButton add = new JButton("Add");
         JButton edit = new JButton("Edit");
         JButton del = new JButton("Delete");
+        JButton addQuiz = new JButton("Add Quiz");
 
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 8));
         bottom.add(add);
         bottom.add(edit);
         bottom.add(del);
+        bottom.add(addQuiz);
 
         JPanel content = new JPanel(new BorderLayout(8, 8));
         content.add(new JScrollPane(lessonList), BorderLayout.CENTER);
@@ -222,6 +224,15 @@ public class InstructorDashboardFrame extends JPanel {
         dlg.setSize(600, 400);
         dlg.setLocationRelativeTo(this);
 
+        addQuiz.addActionListener(e -> {
+            Lesson selL = lessonList.getSelectedValue();
+            if (selL == null) {
+                JOptionPane.showMessageDialog(dlg, "Select a lesson first.");
+                return;
+            }
+
+            new QuizCreationDialog((Frame) SwingUtilities.getWindowAncestor(this), selL, frame.getQuizService()).setVisible(true);
+        });
         add.addActionListener(e -> {
             JTextField titleF = new JTextField();
             JTextArea contentA = new JTextArea(8, 30);
@@ -240,7 +251,7 @@ public class InstructorDashboardFrame extends JPanel {
                 }
                 Lesson newL = currentInstructor.addLesson(sel, t, cnt);
                 lessonModel.addElement(newL);
-                db.saveCourses();
+                cs.saveCourses();
             }
         });
 
@@ -261,7 +272,7 @@ public class InstructorDashboardFrame extends JPanel {
             if (r == JOptionPane.OK_OPTION) {
                 selL.setTitle(titleF.getText().trim());
                 selL.setContent(contentA.getText().trim());
-                db.saveCourses();
+                cs.saveCourses();
                 lessonList.repaint();
             }
         });
@@ -276,7 +287,7 @@ public class InstructorDashboardFrame extends JPanel {
             if (conf == JOptionPane.YES_OPTION) {
                 sel.getLessons().removeIf(l -> l.getID().equals(selL.getID()));
                 lessonModel.removeElement(selL);
-                db.saveCourses();
+                cs.saveCourses();
             }
         });
 
@@ -291,7 +302,7 @@ public class InstructorDashboardFrame extends JPanel {
 
         DefaultListModel<String> model = new DefaultListModel<>();
         for (String sid : sel.getEnrolledStudents()) {
-            Student s = (Student) db.findUserById(sid);
+            Student s = (Student) us.findUserByID(sid);
             String text = sid + (s != null ? " - " + s.getUsername() : "");
             model.addElement(text);
         }

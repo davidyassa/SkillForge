@@ -4,6 +4,7 @@
  */
 package frontend;
 
+import backend.Admin;
 import main.FrameManager;
 import javax.swing.*;
 import controller.UserService;
@@ -44,9 +45,9 @@ public class LoginPanel extends JPanel {
         loginButton.setBounds(325, 300, 150, 40);
         add(loginButton);
 
-        JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(325, 370, 150, 40);
-        add(logoutButton);
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(325, 370, 150, 40);
+        add(cancelButton);
 
         UserService userService = frame.getUserService();
 
@@ -71,9 +72,12 @@ public class LoginPanel extends JPanel {
             } else if (user instanceof Instructor i) {
                 frame.setCurrentInstructor(i);
                 frame.switchPanel(new InstructorDashboardFrame(frame));
+            } else if (user instanceof Admin a) {
+                frame.setCurrentAdmin(a);
+                frame.switchPanel(new AdminDashboardFrame(frame));
             }
         });
 
-        logoutButton.addActionListener(e -> frame.showMainMenu());
+        cancelButton.addActionListener(e -> frame.showMainMenu());
     }
 }

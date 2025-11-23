@@ -4,17 +4,21 @@
  */
 package backend;
 
+import java.util.ArrayList;
+
 public class Lesson {
 
     private final String lessonID;
     private String title;
     private String content;
+    private ArrayList<Quiz> quizzes;
     private final String[] resources;
 
     public Lesson(String lessonId, String title, String content) {
         this.lessonID = lessonId;
         this.title = title;
         this.content = content;
+        this.quizzes = new ArrayList<>();
         this.resources = null;
     }
 
@@ -47,6 +51,23 @@ public class Lesson {
 
     public String[] getResources() {
         return resources;
+    }
+
+    public ArrayList<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public void addQuiz(Quiz quiz) {
+        quizzes.add(quiz);
+    }
+
+    public void removeQuiz(String quizID) {
+        quizzes.removeIf(q -> q.getID().equals(quizID));
+    }
+
+    public int getLessonUniqueID() {
+        String[] parts = lessonID.split("-"); //L2-1
+        return Integer.parseInt(parts[1]);
     }
 
     @Override
