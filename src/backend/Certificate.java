@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author DELL 7550
  */
-public class Certificate {
+public class Certificate implements Searchable {
 
     private String studentId;
     private String courseId;
@@ -25,6 +25,22 @@ public class Certificate {
         this.issueDate = date.format(DateTimeFormatter.ofPattern("yyMMdd"));
         certificateId = JsonDatabaseManager.generateCertificateID(studentId, courseId, this.issueDate);
 
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public String getID() {
+        return certificateId;
+    }
+
+    public String getIssueDate() {
+        return issueDate;
     }
 
 }

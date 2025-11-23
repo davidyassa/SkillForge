@@ -47,11 +47,10 @@ public class Course implements Searchable {
             students.add(studentId);
         }
     }
-    
-    public Boolean isApproved() {
-    return approvalstate != null && approvalstate.equalsIgnoreCase("APPROVED");
-}
 
+    public Boolean isApproved() {
+        return approvalstate != null && approvalstate.equalsIgnoreCase("APPROVED");
+    }
 
     public String getApprovalstate() {
         return approvalstate;

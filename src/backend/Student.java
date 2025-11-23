@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Student extends User {
 
     private final ArrayList<String> enrolledCourses = new ArrayList<>(); //Courses IDs
-    private final ArrayList<String> certificates = new ArrayList<>(); //Certificate IDs
+    private final ArrayList<Certificate> certificates = new ArrayList<>(); //Certificates
     private final ArrayList<StudentCourseProgress> coursesProgress = new ArrayList<>(); //Progress trackers
 
     public Student(String userID, String username, String email, String passwordHash) {
@@ -64,7 +64,11 @@ public class Student extends User {
         }
     }
 
-    public void addCertificate(String certificateID) {
-        certificates.add(certificateID);
+    public void addCertificate(Certificate cert) {
+        certificates.add(cert);
+    }
+
+    public ArrayList<Certificate> getCertificates() {
+        return certificates;
     }
 }

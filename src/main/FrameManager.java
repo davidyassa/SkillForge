@@ -64,7 +64,7 @@ public class FrameManager extends JFrame {
         return currentInstructor;
     }
 
-    public void showMainMenu() {
+    public final void showMainMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
 

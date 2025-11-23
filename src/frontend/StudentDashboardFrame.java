@@ -1,8 +1,10 @@
 package frontend;
 
+import backend.Certificate;
 import main.FrameManager;
 import backend.Course;
 import backend.Lesson;
+import backend.Quiz;
 import backend.Student;
 import controller.CourseService;
 
@@ -13,16 +15,18 @@ import java.util.List;
 public class StudentDashboardFrame extends JPanel {
 
     private Student currentStudent;
-    private CourseService courseService;
+    private CourseService cs;
     private FrameManager frame;
 
     private DefaultListModel<Course> availableCoursesModel;
     private DefaultListModel<Course> enrolledCoursesModel;
     private DefaultListModel<Lesson> lessonsModel;
+    private DefaultListModel<Certificate> certificatesModel;
 
     private JList<Course> availableCoursesList;
     private JList<Course> enrolledCoursesList;
     private JList<Lesson> lessonsList;
+    private JList<Certificate> certificatesList;
 
     private JButton enrollButton;
     private JButton completeLessonButton;
@@ -34,11 +38,12 @@ public class StudentDashboardFrame extends JPanel {
     public StudentDashboardFrame(FrameManager frame) {
         this.frame = frame;
         this.currentStudent = frame.getCurrentStudent();
-        this.courseService = frame.getCourseService();
+        this.cs = frame.getCourseService();
 
         availableCoursesModel = new DefaultListModel<>();
         enrolledCoursesModel = new DefaultListModel<>();
         lessonsModel = new DefaultListModel<>();
+        certificatesModel = new DefaultListModel<>();
 
         setLayout(new BorderLayout(10, 10));
 
@@ -48,7 +53,7 @@ public class StudentDashboardFrame extends JPanel {
         studentNameLabel = new JLabel("Welcome, " + currentStudent.getUsername());
         studentNameLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        progressLabel = new JLabel("Select a course to view progress");
+        progressLabel = new JLabel(" Select a course to view progress");
         progressLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
         topPanel.add(studentNameLabel, BorderLayout.WEST);
@@ -63,6 +68,7 @@ public class StudentDashboardFrame extends JPanel {
         availableCoursesList = new JList<>(availableCoursesModel);
         enrolledCoursesList = new JList<>(enrolledCoursesModel);
         lessonsList = new JList<>(lessonsModel);
+        certificatesList = new JList<>(certificatesModel);
 
         enrollButton = new JButton("Enroll in Selected Course");
         completeLessonButton = new JButton("Mark Lesson as Completed");
@@ -70,11 +76,15 @@ public class StudentDashboardFrame extends JPanel {
         JPanel availablePanel = createPanel("Available Courses", availableCoursesList, enrollButton);
         JPanel enrolledPanel = createPanel("My Courses", enrolledCoursesList, null);
         JPanel lessonsPanel = createPanel("Lessons", lessonsList, completeLessonButton);
+        JPanel certificatesPanel = createPanel("Certificates Earned", certificatesList, null);
+
+        JSplitPane lessonsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, lessonsPanel, certificatesPanel);
+        lessonsSplit.setResizeWeight(0.75);
 
         JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, availablePanel, enrolledPanel);
         mainSplit.setResizeWeight(0.5);
 
-        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsPanel);
+        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mainSplit, lessonsSplit);
         rightSplit.setResizeWeight(0.66);
 
         add(rightSplit, BorderLayout.CENTER);
@@ -103,7 +113,7 @@ public class StudentDashboardFrame extends JPanel {
 
     private void loadAvailableCourses() {
         availableCoursesModel.clear();
-        List<Course> all = courseService.getAllCourses();
+        List<Course> all = cs.getAllCourses();
         List<String> enrolled = currentStudent.getEnrolledCourses();
         for (Course c : all) {
             if (!enrolled.contains(c.getID())) {
@@ -114,7 +124,7 @@ public class StudentDashboardFrame extends JPanel {
 
     private void loadEnrolledCourses() {
         enrolledCoursesModel.clear();
-        List<Course> courses = courseService.getEnrolledCourses(currentStudent.getID());
+        List<Course> courses = cs.getEnrolledCourses(currentStudent.getID());
         for (Course c : courses) {
             enrolledCoursesModel.addElement(c);
         }
@@ -127,9 +137,19 @@ public class StudentDashboardFrame extends JPanel {
             for (Lesson l : c.getLessons()) {
                 lessonsModel.addElement(l);
             }
-            double p = courseService.getCourseProgress(currentStudent.getID(), c.getID());
+            double p = cs.getCourseProgress(currentStudent.getID(), c.getID());
             progressLabel.setText("Progress: " + String.format("%.1f%%", p));
         }
+    }
+
+    private void loadCertificates() {
+        certificatesModel.clear();
+        Student s = this.currentStudent;
+
+        for (Certificate cert : s.getCertificates()) {
+            certificatesModel.addElement(cert);
+        }
+
     }
 
     private void enrollSelectedCourse() {
@@ -138,7 +158,7 @@ public class StudentDashboardFrame extends JPanel {
             JOptionPane.showMessageDialog(this, "Select a course first.");
             return;
         }
-        boolean ok = courseService.enrollStudent(currentStudent.getID(), c.getID());
+        boolean ok = cs.enrollStudent(currentStudent.getID(), c.getID());
         if (ok) {
             loadAvailableCourses();
             loadEnrolledCourses();
@@ -153,7 +173,7 @@ public class StudentDashboardFrame extends JPanel {
             JOptionPane.showMessageDialog(this, "Select a lesson.");
             return;
         }
-        boolean ok = courseService.completeLesson(currentStudent.getID(), c.getID(), l.getID());
+        boolean ok = cs.completeLesson(currentStudent.getID(), c.getID(), l.getID());
         if (ok) {
             loadLessons();
             JOptionPane.showMessageDialog(this, "Lesson completed!");

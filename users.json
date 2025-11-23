@@ -12,13 +12,14 @@
     },
     {
         "enrolledCourses": [
-            "C3"
+            "C3",
+            "C2"
         ],
         "coursesProgress": [
             {
                 "studentID": "U2",
                 "courseID": "C1",
-                "isCourseCompleted": false,
+                "courseCompleted": false,
                 "progress": 66.66666666666666,
                 "completedLessons": [
                     "LC1102",
@@ -28,9 +29,20 @@
             {
                 "studentID": "U2",
                 "courseID": "C3",
-                "isCourseCompleted": false,
-                "progress": 0.0,
-                "completedLessons": []
+                "courseCompleted": true,
+                "progress": 100.0,
+                "completedLessons": [
+                    "LC301"
+                ]
+            },
+            {
+                "studentID": "U2",
+                "courseID": "C2",
+                "courseCompleted": true,
+                "progress": 100.0,
+                "completedLessons": [
+                    "LC201"
+                ]
             }
         ],
         "userID": "U2",
@@ -48,7 +60,7 @@
             {
                 "studentID": "U3",
                 "courseID": "C2",
-                "isCourseCompleted": true,
+                "courseCompleted": false,
                 "progress": 100.0,
                 "completedLessons": [
                     "LC201"
@@ -57,7 +69,7 @@
             {
                 "studentID": "U3",
                 "courseID": "C3",
-                "isCourseCompleted": true,
+                "courseCompleted": false,
                 "progress": 100.0,
                 "completedLessons": [
                     "LC301"
@@ -76,7 +88,7 @@
             {
                 "studentID": "U4",
                 "courseID": "C1",
-                "isCourseCompleted": false,
+                "courseCompleted": false,
                 "progress": 33.33333333333333,
                 "completedLessons": [
                     "LC101"
@@ -97,7 +109,7 @@
             {
                 "studentID": "U5",
                 "courseID": "C2",
-                "isCourseCompleted": true,
+                "courseCompleted": false,
                 "progress": 100.0,
                 "completedLessons": [
                     "LC201"

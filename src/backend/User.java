@@ -20,6 +20,7 @@ public abstract class User implements Searchable {
         this.passwordHash = passwordHash;
     }
 
+    @Override
     public String getID() {
         return userID;
     }

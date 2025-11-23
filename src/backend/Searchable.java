@@ -9,5 +9,6 @@ package backend;
  * @author DELL 7550
  */
 public interface Searchable {
+
     String getID();
 }

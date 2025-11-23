@@ -141,4 +141,11 @@ public class UserService {
         return db.findUserByUsername(username) != null;
     }
 
+    public User findUserByID(String studentID) {
+        return db.findUserById(studentID);
+    }
+
+    public void saveUsers() {
+        db.saveUsers();
+    }
 }

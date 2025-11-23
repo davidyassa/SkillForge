@@ -48,16 +48,20 @@ public class SignupPanel extends JPanel {
         add(passwordField);
 
         JButton studentButton = new JButton("Student");
-        studentButton.setBounds(250, 300, 120, 40);
+        studentButton.setBounds(180, 300, 120, 40);
         add(studentButton);
 
         JButton instructorButton = new JButton("Instructor");
-        instructorButton.setBounds(400, 300, 120, 40);
+        instructorButton.setBounds(330, 300, 120, 40);
         add(instructorButton);
 
-        JButton logoutButton = new JButton("Logout");
-        logoutButton.setBounds(325, 370, 150, 40);
-        add(logoutButton);
+        JButton adminButton = new JButton("Admin");
+        adminButton.setBounds(480, 300, 120, 40);
+        add(adminButton);
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(330, 400, 120, 40);
+        add(cancelButton);
 
         UserService userService = frame.getUserService();
 
@@ -101,6 +105,6 @@ public class SignupPanel extends JPanel {
             }
         });
 
-        logoutButton.addActionListener(e -> frame.showMainMenu());
+        cancelButton.addActionListener(e -> frame.showMainMenu());
     }
 }

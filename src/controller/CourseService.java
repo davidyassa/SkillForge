@@ -74,6 +74,10 @@ public class CourseService {
         return false;
     }
 
+    public ArrayList<Course> getCoursesForInstructor(String instructorId) {
+        return db.getCoursesForInstructor(instructorId);
+    }
+
     public double getCourseProgress(String studentId, String courseID) {
         Student student = (Student) db.findUserById(studentId);
         if (student.getEnrolledCourses().contains(courseID)) {
@@ -95,6 +99,14 @@ public class CourseService {
 
     public Course getCourse(String id) {
         return db.findCourseById(id);
+    }
+
+    public Certificate getCertificate(String id) {
+        return db.findCertificateById(id);
+    }
+
+    public void saveCourses() {
+        db.saveCourses();
     }
 
 }
