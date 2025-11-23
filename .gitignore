@@ -1,26 +1,12 @@
 ### Java ###
-# Compiled class file
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
-*.nar
 *.ear
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
 
@@ -33,18 +19,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-!/lib/gson-2.13.1.jar
+
+### Certificate output ###
 /certificates/
-!/lib/barcodes-7.1.3.jar
-!/lib/hyph-7.1.3.jar
-!/lib/io-7.1.3.jar
-!/lib/slf4j-api-2.0.17.jar
-!/lib/svg-7.1.3.jar
-!/lib/pdfa-7.1.3.jar
-!/lib/slf4j-simple-2.0.17.jar
-!/lib/pdftest-7.1.3.jar
-!/lib/kernel-7.1.3.jar
-!/lib/sign-7.1.3.jar
-!/lib/layout-7.1.3.jar
-!/lib/forms-7.1.3.jar
-!/lib/font-asian-7.1.3.jar
