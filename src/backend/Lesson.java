@@ -6,7 +6,7 @@ package backend;
 
 import java.util.ArrayList;
 
-public class Lesson implements Searchable {
+public class Lesson {
 
     private final String lessonID;
     private String title;
@@ -29,7 +29,6 @@ public class Lesson implements Searchable {
         this.resources = resources.clone();
     }
 
-    @Override
     public String getID() {
         return lessonID;
     }

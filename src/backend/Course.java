@@ -6,7 +6,7 @@ package backend;
 
 import java.util.ArrayList;
 
-public class Course implements Searchable {
+public class Course {
 
     private final String courseId;
     private String title;
@@ -60,7 +60,6 @@ public class Course implements Searchable {
         this.approvalstate = approvalstate;
     }
 
-    @Override
     public String getID() {
         return courseId;
     }

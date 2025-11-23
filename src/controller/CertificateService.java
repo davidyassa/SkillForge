@@ -67,7 +67,6 @@ public class CertificateService {
             try (Document doc = new Document(pdf, landscape)) {
                 PdfFont font = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
                 TextAlignment center = TextAlignment.CENTER;
-                
 
                 // ---- 1. ADD LOGO ----
                 String imgPath = "src/resources/certLogo.png";

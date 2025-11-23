@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author DELL 7550
  */
-public class Certificate implements Searchable {
+public class Certificate {
 
     private String courseTitle;
     private String studentId;
@@ -37,7 +37,6 @@ public class Certificate implements Searchable {
         return courseId;
     }
 
-    @Override
     public String getID() {
         return certificateId;
     }

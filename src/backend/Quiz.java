@@ -9,7 +9,7 @@ package backend;
 
 import java.util.ArrayList;
 
-public class Quiz implements Searchable {
+public class Quiz {
 
     private String quizId;
     private String lessonId;
@@ -21,7 +21,6 @@ public class Quiz implements Searchable {
         this.questions = new ArrayList<>();
     }
 
-    @Override
     public String getID() {
         return quizId;
     }
