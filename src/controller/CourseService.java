@@ -79,7 +79,7 @@ public class CourseService {
     }
 
     public double getCourseProgress(String studentId, String courseID) {
-        Student student = (Student) db.findUserById(studentId);
+        Student student = (Student) JsonDatabaseManager.findUserById(studentId);
         if (student.getEnrolledCourses().contains(courseID)) {
             return student.getProgress(courseID);
         }
@@ -92,6 +92,7 @@ public class CourseService {
             return false;
         }
         s.markLessonCompleted(courseId, lessonId);
+        s.checkAddCertificate(courseId);
         db.saveCourses();
         db.saveUsers();
         return true;

@@ -84,7 +84,7 @@ public class JsonDatabaseManager {
         return null;
     }
 
-    public User findUserById(String userID) {
+    public static User findUserById(String userID) {
         for (User user : users) {
             if (user.getID().equals(userID)) {
                 return user;

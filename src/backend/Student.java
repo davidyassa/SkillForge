@@ -64,8 +64,18 @@ public class Student extends User {
         }
     }
 
-    public void addCertificate(Certificate cert) {
+    public boolean checkAddCertificate(String courseId) {
+        if (this.getProgress(courseId) < 100.0) {
+            return false;
+        }
+        for (Certificate cert : certificates) {
+            if (cert.getCourseId().equals(courseId)) {
+                return false;
+            }
+        }
+        Certificate cert = new Certificate(this.getID(), courseId);
         certificates.add(cert);
+        return true;
     }
 
     public ArrayList<Certificate> getCertificates() {

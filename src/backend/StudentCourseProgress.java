@@ -42,11 +42,13 @@ public class StudentCourseProgress {
             if (completedLessons.contains(l.getID())) {
                 completed++;
             }
+
         }
         progress = (completed / c.getLessons().size()) * 100;
-
+        Student s = (Student) db.findUserById(studentID);
         if (progress >= 100) {
             courseCompleted = true;
+            s.checkAddCertificate(courseID);
         }
     }
 

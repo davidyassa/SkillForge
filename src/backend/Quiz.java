@@ -11,6 +11,7 @@ package backend;
 public class Quiz implements Searchable {
 
     private String quizId;
+    private String lessonId;
     private boolean passed;
 
     public boolean isPassed() {
@@ -29,6 +30,10 @@ public class Quiz implements Searchable {
     public int getQuizUniqueID(){
         String [] parts = quizId.split("-"); //Q2-1
         return Integer.parseInt(parts[1]);
+    }
+
+    public String getLessonId() {
+        return lessonId;
     }
     
     @Override

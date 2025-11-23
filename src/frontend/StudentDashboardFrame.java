@@ -91,6 +91,7 @@ public class StudentDashboardFrame extends JPanel {
 
         loadAvailableCourses();
         loadEnrolledCourses();
+        loadCertificates();
 
         enrollButton.addActionListener(e -> enrollSelectedCourse());
         completeLessonButton.addActionListener(e -> completeLesson());
@@ -140,12 +141,12 @@ public class StudentDashboardFrame extends JPanel {
             double p = cs.getCourseProgress(currentStudent.getID(), c.getID());
             progressLabel.setText("Progress: " + String.format("%.1f%%", p));
         }
+        loadCertificates();
     }
 
     private void loadCertificates() {
         certificatesModel.clear();
         Student s = this.currentStudent;
-
         for (Certificate cert : s.getCertificates()) {
             certificatesModel.addElement(cert);
         }
@@ -176,6 +177,7 @@ public class StudentDashboardFrame extends JPanel {
         boolean ok = cs.completeLesson(currentStudent.getID(), c.getID(), l.getID());
         if (ok) {
             loadLessons();
+            loadCertificates();
             JOptionPane.showMessageDialog(this, "Lesson completed!");
         }
     }

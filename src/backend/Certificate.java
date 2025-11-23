@@ -43,4 +43,8 @@ public class Certificate implements Searchable {
         return issueDate;
     }
 
+    @Override
+    public String toString() {
+        return certificateId;
+    }
 }
