@@ -5,7 +5,8 @@
 package backend;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @author DELL 7550
@@ -17,6 +18,8 @@ public class StudentCourseProgress {
     private boolean isCourseCompleted;
     private double progress; //0 <= progress <= 100
     private final ArrayList<String> completedLessons = new ArrayList<>();
+    private final Map<String, Double> lessonQuizScores = new HashMap<>();
+
     private static JsonDatabaseManager db;
 
     public static void setDB(JsonDatabaseManager dbm) {
@@ -57,6 +60,27 @@ public class StudentCourseProgress {
         }
     }
 
+    ////////////////
+    public void recordLessonScore(String lessonId, double score) {
+        // Simple validation: score must be positive
+        if (score >= 0) {
+            this.lessonQuizScores.put(lessonId, score);
+        }
+    }
+
+    /**
+     * ADDED 3: Missing method required by Instructor.java (getLessonQuizAverage)
+     * Returns the quiz score for a specific lesson, or -1.0 if not found/taken.
+     */
+    public double getLessonScore(String lessonId) {
+        // Retrieves the score, returning -1.0 if the key is not found (quiz not taken)
+        return this.lessonQuizScores.getOrDefault(lessonId, -1.0); 
+    }
+    
+    // ADDED 4: Getter for the full scores map (Useful for advanced analysis/saving)
+    public Map<String, Double> getLessonQuizScores() {
+        return lessonQuizScores;
+    }
     public boolean isIsCourseCompleted() {
         return isCourseCompleted;
     }

@@ -164,9 +164,14 @@ public class Instructor extends User {
             if (s != null) {
 
                 scp = s.getSCP(courseId);
-                if (scp != null && scp.getLessonScore(lessonId) != -1) {
-                    total += scp.getLessonScore(lessonId);
-                    count++;
+if (scp != null) {
+                    // This line is now syntactically correct in Instructor.java
+                    double lessonScore = scp.getLessonScore(lessonId); 
+                    
+                    if (lessonScore != -1) {
+                        total += lessonScore;
+                        count++;
+                    }
                 }
             }
         }

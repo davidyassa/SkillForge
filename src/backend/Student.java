@@ -62,4 +62,9 @@ public class Student extends User {
             scp.completeLesson(lessonID);
         }
     }
+    //////////
+    public boolean removeCourseProgress(String courseID) {
+        return coursesProgress.removeIf(scp -> scp.getCourseID().equals(courseID));
+    }
+
 }

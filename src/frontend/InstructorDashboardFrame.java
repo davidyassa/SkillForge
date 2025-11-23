@@ -13,10 +13,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*; 
 
-public class InstructorDashboardFrame extends JFrame { 
+public class InstructorDashboardFrame extends JPanel { 
 
     private static final Logger logger = Logger.getLogger(InstructorDashboardFrame.class.getName());
 
+    private FrameManager frameManager;
     private Instructor currentInstructor;
     private CourseService courseService;
 
@@ -30,11 +31,17 @@ public class InstructorDashboardFrame extends JFrame {
     private JButton viewInsightsButton;
     private JButton logoutButton;
 
-    public InstructorDashboardFrame(Instructor instructor) {
-        this.currentInstructor = instructor;
+    public InstructorDashboardFrame(FrameManager frame) {
+        this.frameManager = frame;
+        this.currentInstructor = frame.getCurrentInstructor();
+        
+        if (this.currentInstructor == null) {
+            JOptionPane.showMessageDialog(null, "Error: Instructor session not found.", "Fatal Error", JOptionPane.ERROR_MESSAGE);
+            throw new IllegalStateException("Instructor must be set in FrameManager before launching dashboard.");
+        }
 
         JsonDatabaseManager dbManager = new JsonDatabaseManager("users.json", "courses.json");
-
+        Instructor.setDB(dbManager);
         this.courseService = new CourseService(dbManager);
 
         initComponents(); 
@@ -42,9 +49,17 @@ public class InstructorDashboardFrame extends JFrame {
     }
 
     private void initComponents() {
-        setTitle("Instructor Dashboard - Welcome, " + currentInstructor.getUsername());
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
+     //   setTitle("Instructor Dashboard - Welcome, " + currentInstructor.getUsername());
+     //   setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      setLayout(new BorderLayout(5, 5));
+      JLabel welcomeLabel = new JLabel("Instructor Dashboard - Welcome, " + currentInstructor.getUsername(), SwingConstants.CENTER);
+        
+        logoutButton = new JButton("Logout"); 
+        
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(welcomeLabel, BorderLayout.CENTER);
+        headerPanel.add(logoutButton, BorderLayout.EAST);
+        
         coursesListModel = new DefaultListModel<>();
         coursesList = new JList<>(coursesListModel);
         JScrollPane scrollPane = new JScrollPane(coursesList);
@@ -65,7 +80,7 @@ public class InstructorDashboardFrame extends JFrame {
         actionButtonsPanel.add(viewStudentsButton);
         actionButtonsPanel.add(viewInsightsButton);
         
-        JPanel headerPanel = new JPanel(new BorderLayout());
+       /* JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(new JLabel("Your Courses:", SwingConstants.LEFT), BorderLayout.WEST);
         headerPanel.add(logoutButton, BorderLayout.EAST);
         
@@ -76,8 +91,16 @@ public class InstructorDashboardFrame extends JFrame {
         
         pack();
         setSize(700, 500);
-        setLocationRelativeTo(null);
-
+        setLocationRelativeTo(null);*/
+       
+       actionButtonsPanel.add(deleteCourseButton);
+        actionButtonsPanel.add(manageLessonsButton);
+        actionButtonsPanel.add(viewStudentsButton);
+        actionButtonsPanel.add(viewInsightsButton);
+       
+       add(headerPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(actionButtonsPanel, BorderLayout.SOUTH);
 
         createCourseButton.addActionListener(this::createCourseButtonActionPerformed);
         editCourseButton.addActionListener(this::editCourseButtonActionPerformed);
@@ -252,6 +275,6 @@ public class InstructorDashboardFrame extends JFrame {
 
     private void logoutButtonActionPerformed(ActionEvent evt) {
         logger.info("User " + currentInstructor.getUsername() + " logging out.");
-        this.dispose(); 
+        frameManager.showMainMenu();
     }
 }
