@@ -66,7 +66,7 @@ public class LoginPanel extends JPanel {
                 return;
             }
 
-            if (user instanceof Student s) {
+            if (user instanceof Student s) { // check if student
                 frame.setCurrentStudent(s);
                 frame.switchPanel(new StudentDashboardFrame(frame));
             } else if (user instanceof Instructor i) {
