@@ -1,0 +1,51 @@
+[
+  {
+    "courseId": "C1",
+    "title": "Prog2",
+    "description": "asdf",
+    "instructorId": "U2",
+    "approvalstate": "PENDING",
+    "lessons": [
+      {
+        "lessonID": "L1-1",
+        "title": "OOP",
+        "content": "asdf",
+        "quizzes": [
+          {
+            "quizId": "Q1-1-1",
+            "passed": false,
+            "questions": [
+              {
+                "questionText": "choose language",
+                "options": [
+                  "C",
+                  "Python",
+                  "Java",
+                  "Camel"
+                ],
+                "correctOptionIndex": 2
+              },
+              {
+                "questionText": "qwer",
+                "options": [
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ],
+                "correctOptionIndex": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "lessonID": "L1-2",
+        "title": "ay7aga",
+        "content": "asdf",
+        "quizzes": []
+      }
+    ],
+    "students": []
+  }
+]

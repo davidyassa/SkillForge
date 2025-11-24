@@ -1,0 +1,29 @@
+[
+  {
+    "userID": "U1",
+    "role": "ADMIN",
+    "username": "admin",
+    "email": "admin@admin.admin",
+    "passwordHash": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+  },
+  {
+    "createdCourses": [
+      "C1"
+    ],
+    "userID": "U2",
+    "role": "INSTRUCTOR",
+    "username": "ins",
+    "email": "ins@ins.ins",
+    "passwordHash": "e5bf1f03cacff6adf04930cc0953999c28272afbc0f2318b2668b192521ca2fc"
+  },
+  {
+    "enrolledCourses": [],
+    "certificates": [],
+    "coursesProgress": [],
+    "userID": "U3",
+    "role": "STUDENT",
+    "username": "student",
+    "email": "student@student.student",
+    "passwordHash": "264c8c381bf16c982a4e59b0dd4c6f7808c51a05f64c35db42cc78a2a72875bb"
+  }
+]
