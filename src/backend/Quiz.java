@@ -16,7 +16,7 @@ public class Quiz {
     private boolean passed;
     private ArrayList<Question> questions; // NEW: We store questions, not the "passed" status
 
-    public Quiz(String quizId) {
+    public Quiz(String quizId) { // **
         this.quizId = quizId;
         this.questions = new ArrayList<>();
     }
