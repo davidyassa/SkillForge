@@ -266,7 +266,7 @@ public class JsonDatabaseManager {
                 .registerSubtype(Student.class, "STUDENT")
                 .registerSubtype(Instructor.class, "INSTRUCTOR")
                 .registerSubtype(Admin.class, "ADMIN");
-                
+
     }
 
     public final void loadUsers() {
@@ -291,6 +291,7 @@ public class JsonDatabaseManager {
 
     public final void loadCourses() {
         courses.clear();
+
         Gson gson = new GsonBuilder().create();
 
         try (FileReader reader = new FileReader(coursesFile)) {
@@ -301,10 +302,7 @@ public class JsonDatabaseManager {
             if (loaded != null) {
                 courses.addAll(loaded);
             }
-
-        } catch (Exception e) {
-            // missing file → okay
-        }
+        } catch (Exception e) {}
     }
 
     public void saveUsers() {

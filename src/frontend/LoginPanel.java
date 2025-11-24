@@ -4,13 +4,13 @@
  */
 package frontend;
 
-import backend.Admin;
 import main.FrameManager;
 import javax.swing.*;
 import controller.UserService;
 import backend.Student;
 import backend.Instructor;
 import backend.User;
+import backend.Admin;
 
 public class LoginPanel extends JPanel {
 
