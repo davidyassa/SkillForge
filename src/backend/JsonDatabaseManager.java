@@ -264,7 +264,9 @@ public class JsonDatabaseManager {
         return RuntimeTypeAdapterFactory
                 .of(User.class, "role")
                 .registerSubtype(Student.class, "STUDENT")
-                .registerSubtype(Instructor.class, "INSTRUCTOR");
+                .registerSubtype(Instructor.class, "INSTRUCTOR")
+                .registerSubtype(Admin.class, "ADMIN");
+                
     }
 
     public final void loadUsers() {
