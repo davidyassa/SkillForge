@@ -56,7 +56,7 @@ public class Course {
         return approvalstate;
     }
 
-    public void setApprovalstate(String approvalstate) {
+    public void setApprovalstate(String approvalstate) {  // get string from admin class
         this.approvalstate = approvalstate;
     }
 
