@@ -3,8 +3,8 @@
     "courseId": "C1",
     "title": "Prog2",
     "description": "asdf",
-    "instructorId": "U2",
-    "approvalstate": "PENDING",
+    "instructorId": "U3",
+    "approvalstate": "APPROVED",
     "lessons": [
       {
         "lessonID": "L1-1",
@@ -16,22 +16,32 @@
             "passed": false,
             "questions": [
               {
-                "questionText": "choose language",
+                "questionText": "class",
                 "options": [
-                  "C",
-                  "Python",
-                  "Java",
-                  "Camel"
+                  "new",
+                  "old",
+                  "yes",
+                  "no"
                 ],
-                "correctOptionIndex": 2
+                "correctOptionIndex": 0
               },
               {
-                "questionText": "qwer",
+                "questionText": "extends",
                 "options": [
-                  "1",
-                  "2",
-                  "3",
-                  "4"
+                  "one",
+                  "multiple",
+                  "two",
+                  "none of the above"
+                ],
+                "correctOptionIndex": 0
+              },
+              {
+                "questionText": "interface",
+                "options": [
+                  "one",
+                  "multiple",
+                  "two",
+                  "none of the above"
                 ],
                 "correctOptionIndex": 1
               }
@@ -41,7 +51,81 @@
       },
       {
         "lessonID": "L1-2",
-        "title": "ay7aga",
+        "title": "Lang",
+        "content": "asdf",
+        "quizzes": []
+      },
+      {
+        "lessonID": "L1-3",
+        "title": "Libraries",
+        "content": "asdf",
+        "quizzes": [
+          {
+            "quizId": "Q1-3-1",
+            "passed": false,
+            "questions": [
+              {
+                "questionText": "GSON",
+                "options": [
+                  "JSON",
+                  "1",
+                  "2",
+                  "3"
+                ],
+                "correctOptionIndex": 0
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "students": [
+      "U1"
+    ]
+  },
+  {
+    "courseId": "C2",
+    "title": "Electronic",
+    "description": "asdf",
+    "instructorId": "U3",
+    "approvalstate": "APPROVED",
+    "lessons": [
+      {
+        "lessonID": "L2-1",
+        "title": "Diode",
+        "content": "asd",
+        "quizzes": [
+          {
+            "quizId": "Q2-1-1",
+            "passed": false,
+            "questions": [
+              {
+                "questionText": "type",
+                "options": [
+                  "PNP",
+                  "ABC",
+                  "123",
+                  "456"
+                ],
+                "correctOptionIndex": 0
+              },
+              {
+                "questionText": "voltage",
+                "options": [
+                  "SI 0.7",
+                  "SI 0.3",
+                  "Ge 0.2",
+                  "Ge 1.2"
+                ],
+                "correctOptionIndex": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "lessonID": "L2-2",
+        "title": "Transistor",
         "content": "asdf",
         "quizzes": []
       }

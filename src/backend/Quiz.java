@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class Quiz {
 
     private String quizId;
-    private String lessonId;
     private boolean passed;
     private ArrayList<Question> questions; // NEW: We store questions, not the "passed" status
 
@@ -50,10 +49,6 @@ public class Quiz {
         String[] parts = quizId.split("-");
         // We grab the last number as the unique ID
         return Integer.parseInt(parts[parts.length - 1]);
-    }
-
-    public String getLessonId() {
-        return lessonId;
     }
 
     @Override
